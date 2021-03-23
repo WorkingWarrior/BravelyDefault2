@@ -1,290 +1,341 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BravelyDefault2
-{
-	class SaveData
-	{
-		private static SaveData mThis;
-		private String mFileName = null;
-		private Byte[] mHeader = new Byte[0x0C];
-		private Byte[] mBuffer = null;
-		private readonly System.Text.Encoding mEncode = System.Text.Encoding.UTF8;
-		public uint Adventure { private get; set; } = 0;
+namespace BravelyDefault2 {
+    class SaveData {
+        private static SaveData mThis;
+        static readonly byte[] magic = new byte[] { 0x53, 0x41, 0x56, 0x45 };
+        private string mFileName = null;
+        private byte[] mHeader = new byte[0x0C];
+        private byte[] mBuffer = null;
+        private readonly System.Text.Encoding mEncode = System.Text.Encoding.UTF8;
+        public uint Adventure { private get; set; } = 0;
+        public static Character[] Characters { get; private set; } = new Character[] { new Seth(), new Gloria(), new Elvis(), new Adelle() };
 
-		private SaveData()
-		{ }
+        private SaveData() { }
 
-		public static SaveData Instance()
-		{
-			if (mThis == null) mThis = new SaveData();
-			return mThis;
-		}
+        private uint CalcAddress(uint address) {
+            return address;
+        }
 
-		public bool Open(String filename)
-		{
-			if (System.IO.File.Exists(filename) == false) return false;
+        public static SaveData Instance() {
+            if(mThis == null) {
+                mThis = new SaveData();
+            }
 
-			Byte[] tmp = System.IO.File.ReadAllBytes(filename);
-			Byte[] check = { 0x53, 0x41, 0x56, 0x45, };
-			for (int i = 0; i < check.Length; i++)
-			{
-				if (check[i] != tmp[i]) return false;
-			}
+            return mThis;
+        }
 
-			Byte[] comp = new Byte[tmp.Length - mHeader.Length];
-			Array.Copy(tmp, mHeader.Length, comp, 0, comp.Length);
-			Array.Copy(tmp, mHeader, mHeader.Length);
-			try
-			{
-				mBuffer = Ionic.Zlib.ZlibStream.UncompressBuffer(comp);
-			}
-			catch
-			{
-				return false;
-			}
+        public bool Open(String filename) {
+            if(System.IO.File.Exists(filename) == false)
+                return false;
 
-			mFileName = filename;
-			Backup();
-			return true;
-		}
+            byte[] tmp = System.IO.File.ReadAllBytes(filename);
 
-		public bool Save()
-		{
-			if (mFileName == null || mBuffer == null) return false;
+            for(int i = 0; i < SaveData.magic.Length; i++) {
+                if(SaveData.magic[i] != tmp[i]) {
+                    return false;
+                }  
+            }
 
-			Byte[] comp = Ionic.Zlib.ZlibStream.CompressBuffer(mBuffer);
-			Byte[] tmp = new Byte[mHeader.Length + comp.Length];
-			Array.Copy(mHeader, tmp, mHeader.Length);
-			Array.Copy(comp, 0, tmp, mHeader.Length, comp.Length);
-			System.IO.File.WriteAllBytes(mFileName, tmp);
-			return true;
-		}
+            Byte[] comp = new byte[tmp.Length - mHeader.Length];
 
-		public bool SaveAs(String filename)
-		{
-			if (mFileName == null || mBuffer == null) return false;
-			mFileName = filename;
-			return Save();
-		}
+            Array.Copy(tmp, mHeader.Length, comp, 0, comp.Length);
+            Array.Copy(tmp, mHeader, mHeader.Length);
 
-		public void Import(String filename)
-		{
-			if (mFileName == null) return;
+            try {
+                mBuffer = Ionic.Zlib.ZlibStream.UncompressBuffer(comp);
+            } catch {
+                return false;
+            }
 
-			mBuffer = System.IO.File.ReadAllBytes(filename);
-		}
+            #region FUCKAMUCKA
+            // Populate characters with underlying data
+            foreach(Character c in Characters) {
+                c.FindOffsets(mBuffer);
+                c.Populate(mBuffer);
+            }
 
-		public void Export(String filename)
-		{
-			System.IO.File.WriteAllBytes(filename, mBuffer);
-		}
+            //seth.Populate(mBuffer);
+            //gloria.Populate(mBuffer);
+            //elvis.Populate(mBuffer);
+            //adelle.Populate(mBuffer);
+            #endregion
 
-		public uint ReadNumber(uint address, uint size)
-		{
-			if (mBuffer == null) return 0;
-			address = CalcAddress(address);
-			if (address + size > mBuffer.Length) return 0;
-			uint result = 0;
-			for (int i = 0; i < size; i++)
-			{
-				result += (uint)(mBuffer[address + i]) << (i * 8);
-			}
-			return result;
-		}
+            mFileName = filename;
 
-		public uint ReadNumber_Header(uint address, uint size)
-		{
-			if (mHeader == null) return 0;
-			address = CalcAddress(address);
-			if (address + size > mHeader.Length) return 0;
-			uint result = 0;
-			for (int i = 0; i < size; i++)
-			{
-				result += (uint)(mHeader[address + i]) << (i * 8);
-			}
-			return result;
-		}
+            Backup();
 
-		public Byte[] ReadValue(uint address, uint size)
-		{
-			Byte[] result = new Byte[size];
-			if (mBuffer == null) return result;
-			address = CalcAddress(address);
-			if (address + size > mBuffer.Length) return result;
-			for (int i = 0; i < size; i++)
-			{
-				result[i] = mBuffer[address + i];
-			}
-			return result;
-		}
+            return true;
+        }
 
-		// 0 to 7.
-		public bool ReadBit(uint address, uint bit)
-		{
-			if (bit < 0) return false;
-			if (bit > 7) return false;
-			if (mBuffer == null) return false;
-			address = CalcAddress(address);
-			if (address > mBuffer.Length) return false;
-			Byte mask = (Byte)(1 << (int)bit);
-			Byte result = (Byte)(mBuffer[address] & mask);
-			return result != 0;
-		}
+        public bool Save() {
+            if(mFileName == null || mBuffer == null) {
+                return false;
+            }
 
-		public String ReadText(uint address, uint size)
-		{
-			if (mBuffer == null) return "";
-			address = CalcAddress(address);
-			if (address + size > mBuffer.Length) return "";
+            byte[] comp = Ionic.Zlib.ZlibStream.CompressBuffer(mBuffer);
+            byte[] tmp = new byte[mHeader.Length + comp.Length];
 
-			Byte[] tmp = new Byte[size];
-			for (uint i = 0; i < size; i++)
-			{
-				if (mBuffer[address + i] == 0) break;
-				tmp[i] = mBuffer[address + i];
-			}
-			return mEncode.GetString(tmp).Trim('\0');
-		}
+            Array.Copy(mHeader, tmp, mHeader.Length);
+            Array.Copy(comp, 0, tmp, mHeader.Length, comp.Length);
+            System.IO.File.WriteAllBytes(mFileName, tmp);
 
-		public void WriteNumber(uint address, uint size, uint value)
-		{
-			if (mBuffer == null) return;
-			address = CalcAddress(address);
-			if (address + size > mBuffer.Length) return;
-			for (uint i = 0; i < size; i++)
-			{
-				mBuffer[address + i] = (Byte)(value & 0xFF);
-				value >>= 8;
-			}
-		}
+            return true;
+        }
 
-		public void WriteNumber_Header(uint address, uint size, uint value)
-		{
-			if (mHeader == null) return;
-			address = CalcAddress(address);
-			if (address + size > mHeader.Length) return;
-			for (uint i = 0; i < size; i++)
-			{
-				mHeader[address + i] = (Byte)(value & 0xFF);
-				value >>= 8;
-			}
-		}
+        public bool SaveAs(String filename) {
+            if(mFileName == null || mBuffer == null)
+                return false;
+            mFileName = filename;
+            return Save();
+        }
 
-		// 0 to 7.
-		public void WriteBit(uint address, uint bit, bool value)
-		{
-			if (bit < 0) return;
-			if (bit > 7) return;
-			if (mBuffer == null) return;
-			address = CalcAddress(address);
-			if (address > mBuffer.Length) return;
-			Byte mask = (Byte)(1 << (int)bit);
-			if (value) mBuffer[address] = (Byte)(mBuffer[address] | mask);
-			else mBuffer[address] = (Byte)(mBuffer[address] & ~mask);
-		}
+        public void Import(String filename) {
+            if(mFileName == null)
+                return;
 
-		public void WriteText(uint address, uint size, String value)
-		{
-			if (mBuffer == null) return;
-			address = CalcAddress(address);
-			if (address + size > mBuffer.Length) return;
-			Byte[] tmp = mEncode.GetBytes(value);
-			Array.Resize(ref tmp, (int)size);
-			for (uint i = 0; i < size; i++)
-			{
-				mBuffer[address + i] = tmp[i];
-			}
-		}
+            mBuffer = System.IO.File.ReadAllBytes(filename);
+        }
 
-		public void WriteValue(uint address, Byte[] buffer)
-		{
-			if (mBuffer == null) return;
-			address = CalcAddress(address);
-			if (address + buffer.Length > mBuffer.Length) return;
+        public void Export(String filename) {
+            System.IO.File.WriteAllBytes(filename, mBuffer);
+        }
 
-			for (uint i = 0; i < buffer.Length; i++)
-			{
-				mBuffer[address + i] = buffer[i];
-			}
-		}
+        public uint ReadNumber(uint address, uint size) {
+            if(mBuffer == null)
+                return 0;
+            address = CalcAddress(address);
+            if(address + size > mBuffer.Length)
+                return 0;
+            uint result = 0;
+            for(int i = 0; i < size; i++) {
+                result += (uint)(mBuffer[address + i]) << (i * 8);
+            }
+            return result;
+        }
 
-		public void Fill(uint address, uint size, Byte number)
-		{
-			if (mBuffer == null) return;
-			address = CalcAddress(address);
-			if (address + size > mBuffer.Length) return;
-			for (uint i = 0; i < size; i++)
-			{
-				mBuffer[address + i] = number;
-			}
-		}
+        public uint ReadNumber_Header(uint address, uint size) {
+            if(mHeader == null)
+                return 0;
+            address = CalcAddress(address);
+            if(address + size > mHeader.Length)
+                return 0;
+            uint result = 0;
+            for(int i = 0; i < size; i++) {
+                result += (uint)(mHeader[address + i]) << (i * 8);
+            }
+            return result;
+        }
 
-		public void Copy(uint from, uint to, uint size)
-		{
-			if (mBuffer == null) return;
-			from = CalcAddress(from);
-			to = CalcAddress(to);
-			if (from + size > mBuffer.Length) return;
-			if (to + size > mBuffer.Length) return;
-			for (uint i = 0; i < size; i++)
-			{
-				mBuffer[to + i] = mBuffer[from + i];
-			}
-		}
+        public Byte[] ReadValue(uint address, uint size) {
+            Byte[] result = new Byte[size];
+            if(mBuffer == null)
+                return result;
+            address = CalcAddress(address);
+            if(address + size > mBuffer.Length)
+                return result;
+            for(int i = 0; i < size; i++) {
+                result[i] = mBuffer[address + i];
+            }
+            return result;
+        }
 
-		public void Swap(uint from, uint to, uint size)
-		{
-			if (mBuffer == null) return;
-			from = CalcAddress(from);
-			to = CalcAddress(to);
-			if (from + size > mBuffer.Length) return;
-			if (to + size > mBuffer.Length) return;
-			for (uint i = 0; i < size; i++)
-			{
-				Byte tmp = mBuffer[to + i];
-				mBuffer[to + i] = mBuffer[from + i];
-				mBuffer[from + i] = tmp;
-			}
-		}
+        // 0 to 7.
+        public bool ReadBit(uint address, uint bit) {
+            if(bit < 0)
+                return false;
+            if(bit > 7)
+                return false;
+            if(mBuffer == null)
+                return false;
+            address = CalcAddress(address);
+            if(address > mBuffer.Length)
+                return false;
+            Byte mask = (Byte)(1 << (int)bit);
+            Byte result = (Byte)(mBuffer[address] & mask);
+            return result != 0;
+        }
 
-		public List<uint> FindAddress(String name, uint index)
-		{
-			List<uint> result = new List<uint>();
-			if (mBuffer == null) return result;
+        public String ReadText(uint address, uint size) {
+            if(mBuffer == null) {
+                return "";
+            }
 
-			for (; index < mBuffer.Length; index++)
-			{
-				if (mBuffer[index] != name[0]) continue;
+            address = CalcAddress(address);
 
-				int len = 1;
-				for (; len < name.Length; len++)
-				{
-					if (mBuffer[index + len] != name[len]) break;
-				}
-				if (len >= name.Length) result.Add(index);
-				index += (uint)len;
-			}
-			return result;
-		}
+            if(address + size > mBuffer.Length) {
+                return "";
+            }
 
-		private uint CalcAddress(uint address)
-		{
-			return address;
-		}
+            Byte[] tmp = new Byte[size];
 
-		private void Backup()
-		{
-			DateTime now = DateTime.Now;
-			String path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			path = System.IO.Path.Combine(path, "backup");
-			if (!System.IO.Directory.Exists(path))
-			{
-				System.IO.Directory.CreateDirectory(path);
-			}
-			path = System.IO.Path.Combine(path,
-				String.Format("{0:0000}-{1:00}-{2:00} {3:00}-{4:00}", now.Year, now.Month, now.Day, now.Hour, now.Minute));
-			System.IO.File.Copy(mFileName, path, true);
-		}
-	}
+            for(uint i = 0; i < size; i++) {
+                if(mBuffer[address + i] == 0) {
+                    break;
+                }
+                
+                tmp[i] = mBuffer[address + i];
+            }
+
+            return mEncode.GetString(tmp).Trim('\0');
+        }
+
+        public void ReadArray(uint address, uint size) {
+            if(mBuffer == null || address + size > mBuffer.Length) {
+                return;
+            }
+        }
+
+        public void WriteNumber(uint address, uint size, uint value) {
+            if(mBuffer == null)
+                return;
+            address = CalcAddress(address);
+            if(address + size > mBuffer.Length)
+                return;
+            for(uint i = 0; i < size; i++) {
+                mBuffer[address + i] = (Byte)(value & 0xFF);
+                value >>= 8;
+            }
+        }
+
+        public void WriteNumber_Header(uint address, uint size, uint value) {
+            if(mHeader == null)
+                return;
+            address = CalcAddress(address);
+            if(address + size > mHeader.Length)
+                return;
+            for(uint i = 0; i < size; i++) {
+                mHeader[address + i] = (Byte)(value & 0xFF);
+                value >>= 8;
+            }
+        }
+
+        // 0 to 7.
+        public void WriteBit(uint address, uint bit, bool value) {
+            if(bit < 0)
+                return;
+            if(bit > 7)
+                return;
+            if(mBuffer == null)
+                return;
+            address = CalcAddress(address);
+            if(address > mBuffer.Length)
+                return;
+            Byte mask = (Byte)(1 << (int)bit);
+            if(value)
+                mBuffer[address] = (Byte)(mBuffer[address] | mask);
+            else
+                mBuffer[address] = (Byte)(mBuffer[address] & ~mask);
+        }
+
+        public void WriteText(uint address, uint size, String value) {
+            if(mBuffer == null)
+                return;
+            address = CalcAddress(address);
+            if(address + size > mBuffer.Length)
+                return;
+            Byte[] tmp = mEncode.GetBytes(value);
+            Array.Resize(ref tmp, (int)size);
+            for(uint i = 0; i < size; i++) {
+                mBuffer[address + i] = tmp[i];
+            }
+        }
+
+        public void WriteValue(uint address, Byte[] buffer) {
+            if(mBuffer == null)
+                return;
+            address = CalcAddress(address);
+            if(address + buffer.Length > mBuffer.Length)
+                return;
+
+            for(uint i = 0; i < buffer.Length; i++) {
+                mBuffer[address + i] = buffer[i];
+            }
+        }
+
+        public void Fill(uint address, uint size, Byte number) {
+            if(mBuffer == null)
+                return;
+            address = CalcAddress(address);
+            if(address + size > mBuffer.Length)
+                return;
+            for(uint i = 0; i < size; i++) {
+                mBuffer[address + i] = number;
+            }
+        }
+
+        public void Copy(uint from, uint to, uint size) {
+            if(mBuffer == null)
+                return;
+            from = CalcAddress(from);
+            to = CalcAddress(to);
+            if(from + size > mBuffer.Length)
+                return;
+            if(to + size > mBuffer.Length)
+                return;
+            for(uint i = 0; i < size; i++) {
+                mBuffer[to + i] = mBuffer[from + i];
+            }
+        }
+
+        public void Swap(uint from, uint to, uint size) {
+            if(mBuffer == null) {
+                return;
+            }
+
+            from = CalcAddress(from);
+            to = CalcAddress(to);
+
+            if(from + size > mBuffer.Length)
+                return;
+            if(to + size > mBuffer.Length)
+                return;
+            for(uint i = 0; i < size; i++) {
+                Byte tmp = mBuffer[to + i];
+
+                mBuffer[to + i] = mBuffer[from + i];
+                mBuffer[from + i] = tmp;
+            }
+        }
+
+        public List<uint> FindAddress(String name, uint index) {
+            List<uint> result = new List<uint>();
+            if(mBuffer == null)
+                return result;
+
+            for(; index < mBuffer.Length; index++) {
+                if(mBuffer[index] != name[0]) {
+                    continue;
+                }
+
+                int len = 1;
+
+                for(; len < name.Length; len++) {
+                    if(mBuffer[index + len] != name[len])
+                        break;
+                }
+
+                if(len >= name.Length) {
+                    result.Add(index);
+                }
+                    
+                index += (uint)len;
+            }
+
+            return result;
+        }
+
+        private void Backup() {
+            DateTime now = DateTime.Now;
+            String path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            path = System.IO.Path.Combine(path, "backup");
+            if(!System.IO.Directory.Exists(path)) {
+                System.IO.Directory.CreateDirectory(path);
+            }
+            path = System.IO.Path.Combine(path,
+                String.Format("{0:0000}-{1:00}-{2:00} {3:00}-{4:00}", now.Year, now.Month, now.Day, now.Hour, now.Minute));
+            System.IO.File.Copy(mFileName, path, true);
+        }
+    }
 }
