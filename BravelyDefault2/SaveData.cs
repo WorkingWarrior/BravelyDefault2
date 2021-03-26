@@ -380,7 +380,7 @@ namespace BravelyDefault2 {
             List<uint> result = new();
 
             if(null == buffer) {
-                throw new ArgumentNullException();
+                return result;
             }
 
             for(; index < mBuffer.Length; index++) {
