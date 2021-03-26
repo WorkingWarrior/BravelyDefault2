@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BravelyDefault2 {
     class Util {
@@ -72,8 +70,8 @@ namespace BravelyDefault2 {
         }
 
         public static GVASData ReadData(String name, uint index) {
-            var gvas = new GVAS(null);
-            var list = SaveData.Instance().FindAddress(name, index);
+            GVAS gvas = new GVAS(null);
+            List<uint> list = SaveData.Instance().FindAddress(name, index);
 
             if(list.Count == 0) {
                 return null;

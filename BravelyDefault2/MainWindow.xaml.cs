@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Win32;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
 
 namespace BravelyDefault2 {
     /// <summary>
@@ -25,9 +14,11 @@ namespace BravelyDefault2 {
         }
 
         private void MenuItemFileOpen_Click(object sender, RoutedEventArgs e) {
-            var dlg = new OpenFileDialog();
-            if(dlg.ShowDialog() == false)
+            OpenFileDialog dlg = new OpenFileDialog();
+            if(dlg.ShowDialog() == false) {
                 return;
+            }
+
             SaveData.Instance().Open(dlg.FileName);
             DataContext = new ViewModel();
         }
@@ -37,23 +28,29 @@ namespace BravelyDefault2 {
         }
 
         private void MenuItemFileSaveAs_Click(object sender, RoutedEventArgs e) {
-            var dlg = new SaveFileDialog();
-            if(dlg.ShowDialog() == false)
+            SaveFileDialog dlg = new SaveFileDialog();
+            if(dlg.ShowDialog() == false) {
                 return;
+            }
+
             SaveData.Instance().SaveAs(dlg.FileName);
         }
 
         private void MenuItemFileImport_Click(object sender, RoutedEventArgs e) {
-            var dlg = new OpenFileDialog();
-            if(dlg.ShowDialog() == false)
+            OpenFileDialog dlg = new OpenFileDialog();
+            if(dlg.ShowDialog() == false) {
                 return;
+            }
+
             SaveData.Instance().Import(dlg.FileName);
         }
 
         private void MenuItemFileExport_Click(object sender, RoutedEventArgs e) {
-            var dlg = new SaveFileDialog();
-            if(dlg.ShowDialog() == false)
+            SaveFileDialog dlg = new SaveFileDialog();
+            if(dlg.ShowDialog() == false) {
                 return;
+            }
+
             SaveData.Instance().Export(dlg.FileName);
         }
 

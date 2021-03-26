@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BravelyDefault2 {
+﻿namespace BravelyDefault2 {
     class Job {
         public virtual string SaveDataID => "";
         public virtual string Name => "";

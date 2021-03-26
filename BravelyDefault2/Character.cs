@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BravelyDefault2 {
     abstract class Character {
@@ -38,6 +34,18 @@ namespace BravelyDefault2 {
 
             foreach(Job j in Jobs) {
                 j.EXP = BitConverter.ToInt32(rawSaveData, j.Offset);
+            }
+        }
+
+        public void UpdateBufferData(byte[] rawSaveData) {
+            Array.Copy(BitConverter.GetBytes(HP), 0, rawSaveData, (int)(BaseOffset + HPOffset), 4);
+            Array.Copy(BitConverter.GetBytes(MaxHP), 0, rawSaveData, (int)(BaseOffset + MaxHPOffset), 4);
+            Array.Copy(BitConverter.GetBytes(MP), 0, rawSaveData, (int)(BaseOffset + MPOffset), 4);
+            Array.Copy(BitConverter.GetBytes(MaxMP), 0, rawSaveData, (int)(BaseOffset + MaxMPOffset), 4);
+            Array.Copy(BitConverter.GetBytes(EXP), 0, rawSaveData, (int)(BaseOffset + EXPOffset), 4);
+
+            foreach(Job j in Jobs) {
+                Array.Copy(BitConverter.GetBytes(j.EXP), 0, rawSaveData, j.Offset, 4);
             }
         }
 

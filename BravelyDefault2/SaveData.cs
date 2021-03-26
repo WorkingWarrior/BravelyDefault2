@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 namespace BravelyDefault2 {
     class SaveData {
+        private const int HeaderLength = 0x0C;
         private static SaveData mThis;
         static readonly byte[] magic = new byte[] { 0x53, 0x41, 0x56, 0x45 };
         private string mFileName = null;
-        private byte[] mHeader = new byte[0x0C];
+        private byte[] mHeader = new byte[HeaderLength];
         private byte[] mBuffer = null;
         private readonly System.Text.Encoding mEncode = System.Text.Encoding.UTF8;
         public uint Adventure { private get; set; } = 0;
@@ -27,15 +28,16 @@ namespace BravelyDefault2 {
         }
 
         public bool Open(String filename) {
-            if(System.IO.File.Exists(filename) == false)
+            if(System.IO.File.Exists(filename) == false) {
                 return false;
+            }
 
             byte[] tmp = System.IO.File.ReadAllBytes(filename);
 
-            for(int i = 0; i < SaveData.magic.Length; i++) {
-                if(SaveData.magic[i] != tmp[i]) {
+            for(int i = 0; i < magic.Length; i++) {
+                if(magic[i] != tmp[i]) {
                     return false;
-                }  
+                }
             }
 
             Byte[] comp = new byte[tmp.Length - mHeader.Length];
@@ -49,18 +51,10 @@ namespace BravelyDefault2 {
                 return false;
             }
 
-            #region FUCKAMUCKA
-            // Populate characters with underlying data
             foreach(Character c in Characters) {
                 c.FindOffsets(mBuffer);
                 c.Populate(mBuffer);
             }
-
-            //seth.Populate(mBuffer);
-            //gloria.Populate(mBuffer);
-            //elvis.Populate(mBuffer);
-            //adelle.Populate(mBuffer);
-            #endregion
 
             mFileName = filename;
 
@@ -74,6 +68,12 @@ namespace BravelyDefault2 {
                 return false;
             }
 
+            #region CHARACTER_DATA_UPDATE
+            foreach(Character c in Characters) {
+                c.UpdateBufferData(mBuffer);
+            }
+            #endregion
+
             byte[] comp = Ionic.Zlib.ZlibStream.CompressBuffer(mBuffer);
             byte[] tmp = new byte[mHeader.Length + comp.Length];
 
@@ -85,15 +85,18 @@ namespace BravelyDefault2 {
         }
 
         public bool SaveAs(String filename) {
-            if(mFileName == null || mBuffer == null)
+            if(mFileName == null || mBuffer == null) {
                 return false;
+            }
+
             mFileName = filename;
             return Save();
         }
 
         public void Import(String filename) {
-            if(mFileName == null)
+            if(mFileName == null) {
                 return;
+            }
 
             mBuffer = System.IO.File.ReadAllBytes(filename);
         }
@@ -103,24 +106,35 @@ namespace BravelyDefault2 {
         }
 
         public uint ReadNumber(uint address, uint size) {
-            if(mBuffer == null)
+            if(mBuffer == null) {
                 return 0;
+            }
+
             address = CalcAddress(address);
-            if(address + size > mBuffer.Length)
+
+            if(address + size > mBuffer.Length) {
                 return 0;
+            }
+
             uint result = 0;
+
             for(int i = 0; i < size; i++) {
                 result += (uint)(mBuffer[address + i]) << (i * 8);
             }
+
             return result;
         }
 
         public uint ReadNumber_Header(uint address, uint size) {
-            if(mHeader == null)
+            if(mHeader == null) {
                 return 0;
+            }
+
             address = CalcAddress(address);
-            if(address + size > mHeader.Length)
+            if(address + size > mHeader.Length) {
                 return 0;
+            }
+
             uint result = 0;
             for(int i = 0; i < size; i++) {
                 result += (uint)(mHeader[address + i]) << (i * 8);
@@ -130,30 +144,47 @@ namespace BravelyDefault2 {
 
         public Byte[] ReadValue(uint address, uint size) {
             Byte[] result = new Byte[size];
-            if(mBuffer == null)
+
+            if(mBuffer == null) {
                 return result;
+            }
+
             address = CalcAddress(address);
-            if(address + size > mBuffer.Length)
+
+            if(address + size > mBuffer.Length) {
                 return result;
+            }
+
             for(int i = 0; i < size; i++) {
                 result[i] = mBuffer[address + i];
             }
+
             return result;
         }
 
         // 0 to 7.
         public bool ReadBit(uint address, uint bit) {
-            if(bit < 0)
+            if(bit < 0) {
                 return false;
-            if(bit > 7)
+            }
+
+            if(bit > 7) {
                 return false;
-            if(mBuffer == null)
+            }
+
+            if(mBuffer == null) {
                 return false;
+            }
+
             address = CalcAddress(address);
-            if(address > mBuffer.Length)
+
+            if(address > mBuffer.Length) {
                 return false;
+            }
+
             Byte mask = (Byte)(1 << (int)bit);
             Byte result = (Byte)(mBuffer[address] & mask);
+
             return result != 0;
         }
 
@@ -174,7 +205,7 @@ namespace BravelyDefault2 {
                 if(mBuffer[address + i] == 0) {
                     break;
                 }
-                
+
                 tmp[i] = mBuffer[address + i];
             }
 
@@ -188,11 +219,15 @@ namespace BravelyDefault2 {
         }
 
         public void WriteNumber(uint address, uint size, uint value) {
-            if(mBuffer == null)
+            if(mBuffer == null) {
                 return;
+            }
+
             address = CalcAddress(address);
-            if(address + size > mBuffer.Length)
+            if(address + size > mBuffer.Length) {
                 return;
+            }
+
             for(uint i = 0; i < size; i++) {
                 mBuffer[address + i] = (Byte)(value & 0xFF);
                 value >>= 8;
@@ -200,11 +235,15 @@ namespace BravelyDefault2 {
         }
 
         public void WriteNumber_Header(uint address, uint size, uint value) {
-            if(mHeader == null)
+            if(mHeader == null) {
                 return;
+            }
+
             address = CalcAddress(address);
-            if(address + size > mHeader.Length)
+            if(address + size > mHeader.Length) {
                 return;
+            }
+
             for(uint i = 0; i < size; i++) {
                 mHeader[address + i] = (Byte)(value & 0xFF);
                 value >>= 8;
@@ -213,28 +252,41 @@ namespace BravelyDefault2 {
 
         // 0 to 7.
         public void WriteBit(uint address, uint bit, bool value) {
-            if(bit < 0)
+            if(bit < 0) {
                 return;
-            if(bit > 7)
+            }
+
+            if(bit > 7) {
                 return;
-            if(mBuffer == null)
+            }
+
+            if(mBuffer == null) {
                 return;
+            }
+
             address = CalcAddress(address);
-            if(address > mBuffer.Length)
+            if(address > mBuffer.Length) {
                 return;
+            }
+
             Byte mask = (Byte)(1 << (int)bit);
-            if(value)
+            if(value) {
                 mBuffer[address] = (Byte)(mBuffer[address] | mask);
-            else
+            } else {
                 mBuffer[address] = (Byte)(mBuffer[address] & ~mask);
+            }
         }
 
         public void WriteText(uint address, uint size, String value) {
-            if(mBuffer == null)
+            if(mBuffer == null) {
                 return;
+            }
+
             address = CalcAddress(address);
-            if(address + size > mBuffer.Length)
+            if(address + size > mBuffer.Length) {
                 return;
+            }
+
             Byte[] tmp = mEncode.GetBytes(value);
             Array.Resize(ref tmp, (int)size);
             for(uint i = 0; i < size; i++) {
@@ -243,11 +295,14 @@ namespace BravelyDefault2 {
         }
 
         public void WriteValue(uint address, Byte[] buffer) {
-            if(mBuffer == null)
+            if(mBuffer == null) {
                 return;
+            }
+
             address = CalcAddress(address);
-            if(address + buffer.Length > mBuffer.Length)
+            if(address + buffer.Length > mBuffer.Length) {
                 return;
+            }
 
             for(uint i = 0; i < buffer.Length; i++) {
                 mBuffer[address + i] = buffer[i];
@@ -255,25 +310,35 @@ namespace BravelyDefault2 {
         }
 
         public void Fill(uint address, uint size, Byte number) {
-            if(mBuffer == null)
+            if(mBuffer == null) {
                 return;
+            }
+
             address = CalcAddress(address);
-            if(address + size > mBuffer.Length)
+            if(address + size > mBuffer.Length) {
                 return;
+            }
+
             for(uint i = 0; i < size; i++) {
                 mBuffer[address + i] = number;
             }
         }
 
         public void Copy(uint from, uint to, uint size) {
-            if(mBuffer == null)
+            if(mBuffer == null) {
                 return;
+            }
+
             from = CalcAddress(from);
             to = CalcAddress(to);
-            if(from + size > mBuffer.Length)
+            if(from + size > mBuffer.Length) {
                 return;
-            if(to + size > mBuffer.Length)
+            }
+
+            if(to + size > mBuffer.Length) {
                 return;
+            }
+
             for(uint i = 0; i < size; i++) {
                 mBuffer[to + i] = mBuffer[from + i];
             }
@@ -287,10 +352,14 @@ namespace BravelyDefault2 {
             from = CalcAddress(from);
             to = CalcAddress(to);
 
-            if(from + size > mBuffer.Length)
+            if(from + size > mBuffer.Length) {
                 return;
-            if(to + size > mBuffer.Length)
+            }
+
+            if(to + size > mBuffer.Length) {
                 return;
+            }
+
             for(uint i = 0; i < size; i++) {
                 Byte tmp = mBuffer[to + i];
 
@@ -301,8 +370,9 @@ namespace BravelyDefault2 {
 
         public List<uint> FindAddress(String name, uint index) {
             List<uint> result = new List<uint>();
-            if(mBuffer == null)
+            if(mBuffer == null) {
                 return result;
+            }
 
             for(; index < mBuffer.Length; index++) {
                 if(mBuffer[index] != name[0]) {
@@ -312,14 +382,15 @@ namespace BravelyDefault2 {
                 int len = 1;
 
                 for(; len < name.Length; len++) {
-                    if(mBuffer[index + len] != name[len])
+                    if(mBuffer[index + len] != name[len]) {
                         break;
+                    }
                 }
 
                 if(len >= name.Length) {
                     result.Add(index);
                 }
-                    
+
                 index += (uint)len;
             }
 

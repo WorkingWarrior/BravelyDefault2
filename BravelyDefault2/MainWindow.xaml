@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BravelyDefault2"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="BravelyDefault2 SaveEditor(Nintendo Switch)" Height="450" Width="600">
+        Title="BravelyDefault2 SaveEditor(Nintendo Switch)">
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
@@ -91,8 +91,16 @@
                                         <ColumnDefinition/>
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center"/>
                                     <TextBox Text="{Binding ViewModelSeth.Jobs[0].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                                        <Button Content="Min"/>
+                                        <Button Content="Max"/>
+                                    </StackPanel>
                                 </Grid>
                             </GroupBox>
                             <GroupBox Header="Monk" Grid.Row="1">
@@ -361,7 +369,267 @@
                             <TextBox x:Name="TextBox_Gloria_EXP" Grid.Column="1" Text="{Binding ViewModelGloria.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Jobs"></TabItem>
+                    <TabItem Header="Jobs">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <GroupBox Header="Freelancer" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[0].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Monk" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[1].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="White Mage" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[2].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Black Mage" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[3].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Vanguard" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[4].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Bard" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[5].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Beast Master" Grid.Column="1"  Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[6].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Thief" Grid.Column="1" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[7].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Gambler" Grid.Column="1" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[8].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Berserker" Grid.Column="1" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[9].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Red Mage" Grid.Column="1" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[10].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Ranger" Grid.Column="1" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[11].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Shieldmaster" Grid.Column="2" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[12].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Pictomancer" Grid.Column="2" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[13].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Dragoon" Grid.Column="2" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[14].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Master" Grid.Column="2" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[15].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Swordmaster" Grid.Column="2" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[16].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Oracle" Grid.Column="2" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[17].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Salve-Maker" Grid.Column="3" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[18].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Arcanist" Grid.Column="3" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[19].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Judgement" Grid.Column="3" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[20].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Phantom" Grid.Column="3" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[21].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Hellblade" Grid.Column="3" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[22].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Bravebearer" Grid.Column="3" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelGloria.Jobs[23].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                        </Grid>
+                    </TabItem>
                 </TabControl>
             </TabItem>
             <TabItem Header="Elvis">
@@ -393,7 +661,267 @@
                             <TextBox x:Name="TextBox_Elvis_EXP" Grid.Column="1" Text="{Binding ViewModelElvis.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Jobs"></TabItem>
+                    <TabItem Header="Jobs">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <GroupBox Header="Freelancer" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[0].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Monk" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[1].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="White Mage" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[2].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Black Mage" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[3].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Vanguard" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[4].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Bard" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[5].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Beast Master" Grid.Column="1"  Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[6].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Thief" Grid.Column="1" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[7].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Gambler" Grid.Column="1" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[8].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Berserker" Grid.Column="1" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[9].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Red Mage" Grid.Column="1" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[10].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Ranger" Grid.Column="1" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[11].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Shieldmaster" Grid.Column="2" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[12].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Pictomancer" Grid.Column="2" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[13].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Dragoon" Grid.Column="2" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[14].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Master" Grid.Column="2" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[15].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Swordmaster" Grid.Column="2" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[16].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Oracle" Grid.Column="2" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[17].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Salve-Maker" Grid.Column="3" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[18].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Arcanist" Grid.Column="3" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[19].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Judgement" Grid.Column="3" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[20].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Phantom" Grid.Column="3" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[21].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Hellblade" Grid.Column="3" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[22].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Bravebearer" Grid.Column="3" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelElvis.Jobs[23].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                        </Grid>
+                    </TabItem>
                 </TabControl>
             </TabItem>
             <TabItem Header="Adelle">
@@ -425,7 +953,267 @@
                             <TextBox x:Name="TextBox_Adelle_EXP" Grid.Column="1" Text="{Binding ViewModelAdelle.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Jobs"></TabItem>
+                    <TabItem Header="Jobs">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <GroupBox Header="Freelancer" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[0].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Monk" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[1].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="White Mage" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[2].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Black Mage" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[3].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Vanguard" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[4].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Bard" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[5].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Beast Master" Grid.Column="1"  Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[6].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Thief" Grid.Column="1" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[7].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Gambler" Grid.Column="1" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[8].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Berserker" Grid.Column="1" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[9].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Red Mage" Grid.Column="1" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[10].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Ranger" Grid.Column="1" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[11].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Shieldmaster" Grid.Column="2" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[12].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Pictomancer" Grid.Column="2" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[13].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Dragoon" Grid.Column="2" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[14].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Master" Grid.Column="2" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[15].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Swordmaster" Grid.Column="2" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[16].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Oracle" Grid.Column="2" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[17].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Salve-Maker" Grid.Column="3" Grid.Row="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[18].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Arcanist" Grid.Column="3" Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[19].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Judgement" Grid.Column="3" Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[20].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Phantom" Grid.Column="3" Grid.Row="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[21].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Hellblade" Grid.Column="3" Grid.Row="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[22].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox Header="Bravebearer" Grid.Column="3" Grid.Row="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="EXP" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <TextBox Text="{Binding ViewModelAdelle.Jobs[23].EXP, Mode=TwoWay}" Grid.Column="1" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                                </Grid>
+                            </GroupBox>
+                        </Grid>
+                    </TabItem>
                 </TabControl>
             </TabItem>
         </TabControl>
