@@ -22,6 +22,8 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <StartupObject>BravelyDefault2.App</StartupObject>
     <ApplicationIcon>Gloria.ico</ApplicationIcon>
+    <Authors>turtle-insect, Sölve Svartskogen</Authors>
+    <PackageIcon>Gloria.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -54,6 +56,10 @@
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="..\Gloria.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 </Project>
