@@ -52,6 +52,6 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: |
-          BravelyDefault2.dll.config
-          BravelyDefault2.exe
-          sni.dll
+          D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\publish\BravelyDefault2.dll.config
+          D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\BravelyDefault2.exe
+          D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\sni.dll
