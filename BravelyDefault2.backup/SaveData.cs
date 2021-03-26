@@ -281,7 +281,6 @@ namespace BravelyDefault2 {
 
             byte[] tmp = mEncode.GetBytes(value);
 
-
             Array.Resize(ref tmp, (int)size);
             Array.Copy(tmp, 0, buffer, address, size);
         }
@@ -290,7 +289,7 @@ namespace BravelyDefault2 {
             byte[] destBuffer = header ? mHeader : mBuffer;
 
             if(destBuffer == null) {
-                throw new ArgumentNullException();
+                return;
             }
 
             address = CalcAddress(address);
@@ -299,11 +298,7 @@ namespace BravelyDefault2 {
                 throw new IndexOutOfRangeException();
             }
 
-            try {
-                Array.Copy(buffer, 0, destBuffer, address, buffer.Length);
-            } catch(Exception e) {
-                Console.WriteLine("{0} Exception caught.", e);
-            }
+            Array.Copy(buffer, 0, destBuffer, address, buffer.Length);
         }
 
         public void Fill(uint address, uint size, byte number, bool header = false) {
@@ -319,7 +314,9 @@ namespace BravelyDefault2 {
                 throw new IndexOutOfRangeException();
             }
 
-            Array.Fill(buffer, number, (int)address, (int)size);
+            for(uint i = 0; i < size; i++) {
+                buffer[address + i] = number;
+            }
         }
 
         public void Copy(uint from, uint to, uint size, bool header = false) {
@@ -340,10 +337,8 @@ namespace BravelyDefault2 {
                 throw new IndexOutOfRangeException();
             }
 
-            try {
-                Array.Copy(buffer, from, buffer, to, size);
-            } catch(Exception e) {
-                Console.WriteLine("{0} Exception caught.", e);
+            for(uint i = 0; i < size; i++) {
+                buffer[to + i] = buffer[from + i];
             }
         }
 

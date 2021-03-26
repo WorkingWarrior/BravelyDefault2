@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BravelyDefault2"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Bravely Default 2 Save Editor (Nintendo Switch)" d:DesignWidth="595.637" d:DesignHeight="445.32" Width="1024" Height="480">
+        Title="BravelyDefault2 SaveEditor(Nintendo Switch)">
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
