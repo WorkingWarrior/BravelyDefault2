@@ -92,5 +92,5 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
     # Publish
-    - name: Publish
-      run: dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true --self-contained false
+    #- name: Publish
+    #  run: dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true --self-contained false
