@@ -1,0 +1,57 @@
+# This is a basic workflow to help you get started with Actions
+
+name: "tagged-release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: BravelyDefault2.sln                        # Replace with your solution name, i.e. MyWpfApp.sln.
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
+    - name: ACTIONS_ALLOW_UNSECURE_COMMANDS
+      id: ACTIONS_ALLOW_UNSECURE_COMMANDS
+      run: echo 'ACTIONS_ALLOW_UNSECURE_COMMANDS=true' >> $GITHUB_ENV
+      
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
+
+    # Build an application
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish
+      run: dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true --self-contained false
+      
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        files: |
+          BravelyDefault2.dll.config
+          BravelyDefault2.exe
+          sni.dll
