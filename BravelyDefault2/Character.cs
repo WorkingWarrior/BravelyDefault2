@@ -78,28 +78,4 @@ namespace BravelyDefault2 {
             }
         }
     }
-
-    class Seth : Character {
-        public Seth() {
-            Name = "Seth";
-        }
-    }
-
-    class Gloria : Character {
-        public Gloria() {
-            Name = "Gloria";
-        }
-    }
-
-    class Elvis : Character {
-        public Elvis() {
-            Name = "Elvis";
-        }
-    }
-
-    class Adelle : Character {
-        public Adelle() {
-            Name = "Adelle";
-        }
-    }
 }
