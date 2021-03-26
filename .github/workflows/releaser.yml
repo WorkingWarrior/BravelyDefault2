@@ -47,11 +47,18 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true --self-contained false
       
-    - uses: "marvinpinto/action-automatic-releases@latest"
+    #- uses: "marvinpinto/action-automatic-releases@latest"
+    #  with:
+    #    repo_token: "${{ secrets.GITHUB_TOKEN }}"
+    #    prerelease: false
+    #    files: |
+    #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\publish\BravelyDefault2.dll.config
+    #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\BravelyDefault2.exe
+    #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\sni.dll
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
       with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        prerelease: false
-        files: |
-          D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\publish\BravelyDefault2.dll.config
-          D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\BravelyDefault2.exe
-          D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\sni.dll
+          name: dist-without-markdown
+          path: |
+            BravelyDefault2\bin\Release\net5.0-windows\win-x64\publish
+            !BravelyDefault2\**\*.pdb
