@@ -109,7 +109,7 @@ namespace BravelyDefault2 {
         public uint ReadNumber(uint address, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
-            if(null == buffer) {
+            if(buffer == null) {
                 throw new ArgumentNullException();
             }
 
@@ -138,7 +138,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
             byte[] result = new byte[size];
 
-            if(null == buffer) {
+            if(buffer == null) {
                 throw new ArgumentNullException();
             }
 
@@ -166,7 +166,7 @@ namespace BravelyDefault2 {
             }
 
             if(buffer == null) {
-                return false;
+                throw new ArgumentNullException();
             }
 
             address = CalcAddress(address);
@@ -185,7 +185,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                return "";
+                throw new ArgumentNullException();
             }
 
             address = CalcAddress(address);
@@ -215,7 +215,7 @@ namespace BravelyDefault2 {
         public void WriteNumber(uint address, uint value, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
-            if(null == buffer) {
+            if(buffer == null) {
                 throw new ArgumentNullException();
             }
 
@@ -247,7 +247,7 @@ namespace BravelyDefault2 {
 
             byte[] buffer = header ? mHeader : mBuffer;
 
-            if(null == buffer) {
+            if(buffer == null) {
                 throw new ArgumentNullException();
             }
 
@@ -269,7 +269,7 @@ namespace BravelyDefault2 {
         public void WriteText(uint address, uint size, string value, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
-            if(null == buffer) {
+            if(buffer == null) {
                 throw new ArgumentNullException();
             }
 
@@ -308,7 +308,7 @@ namespace BravelyDefault2 {
         public void Fill(uint address, uint size, byte number, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
-            if(null == buffer) {
+            if(buffer == null) {
                 throw new ArgumentNullException();
             }
 
@@ -324,7 +324,7 @@ namespace BravelyDefault2 {
         public void Copy(uint from, uint to, uint size, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
-            if(null == buffer) {
+            if(buffer == null) {
                 throw new ArgumentNullException();
             }
 
@@ -349,7 +349,7 @@ namespace BravelyDefault2 {
         public void Swap(uint from, uint to, uint size, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
-            if(null == buffer) {
+            if(buffer == null) {
                 throw new ArgumentNullException();
             }
 
@@ -379,7 +379,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
             List<uint> result = new();
 
-            if(null == buffer) {
+            if(buffer == null) {
                 return result;
             }
 
