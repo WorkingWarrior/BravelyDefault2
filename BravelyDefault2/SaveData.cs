@@ -281,7 +281,6 @@ namespace BravelyDefault2 {
 
             byte[] tmp = mEncode.GetBytes(value);
 
-
             Array.Resize(ref tmp, (int)size);
             Array.Copy(tmp, 0, buffer, address, size);
         }
@@ -347,45 +346,52 @@ namespace BravelyDefault2 {
             }
         }
 
-        public void Swap(uint from, uint to, uint size) {
-            if(mBuffer == null) {
-                return;
+        public void Swap(uint from, uint to, uint size, bool header = false) {
+            byte[] buffer = header ? mHeader : mBuffer;
+
+            if(null == buffer) {
+                throw new ArgumentNullException();
             }
 
             from = CalcAddress(from);
             to = CalcAddress(to);
 
-            if(from + size > mBuffer.Length) {
-                return;
+            if(from + size > buffer.Length) {
+                throw new IndexOutOfRangeException();
             }
 
-            if(to + size > mBuffer.Length) {
-                return;
+            if(to + size > buffer.Length) {
+                throw new IndexOutOfRangeException();
             }
 
-            for(uint i = 0; i < size; i++) {
-                Byte tmp = mBuffer[to + i];
+            byte[] tmp = new byte[size];
 
-                mBuffer[to + i] = mBuffer[from + i];
-                mBuffer[from + i] = tmp;
+            try {
+                Array.Copy(buffer, to, tmp, 0, size);
+                Array.Copy(buffer, from, buffer, to, size);
+                Array.Copy(tmp, 0, buffer, from, size);
+            } catch(Exception e) {
+                Console.WriteLine("{0} Exception caught.", e);
             }
         }
 
-        public List<uint> FindAddress(String name, uint index) {
-            List<uint> result = new List<uint>();
-            if(mBuffer == null) {
-                return result;
+        public List<uint> FindAddress(string name, uint index, bool header = false) {
+            byte[] buffer = header ? mHeader : mBuffer;
+            List<uint> result = new();
+
+            if(null == buffer) {
+                throw new ArgumentNullException();
             }
 
             for(; index < mBuffer.Length; index++) {
-                if(mBuffer[index] != name[0]) {
+                if(buffer[index] != name[0]) {
                     continue;
                 }
 
                 int len = 1;
 
                 for(; len < name.Length; len++) {
-                    if(mBuffer[index + len] != name[len]) {
+                    if(buffer[index + len] != name[len]) {
                         break;
                     }
                 }
@@ -404,9 +410,11 @@ namespace BravelyDefault2 {
             DateTime now = DateTime.Now;
             String path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             path = System.IO.Path.Combine(path, "backup");
+
             if(!System.IO.Directory.Exists(path)) {
                 System.IO.Directory.CreateDirectory(path);
             }
+
             path = System.IO.Path.Combine(path,
                 String.Format("{0:0000}-{1:00}-{2:00} {3:00}-{4:00}", now.Year, now.Month, now.Day, now.Hour, now.Minute));
             System.IO.File.Copy(mFileName, path, true);
