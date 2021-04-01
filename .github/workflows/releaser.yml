@@ -1,5 +1,4 @@
 # This is a basic workflow to help you get started with Actions
-
 name: "tagged-release"
 
 on:
@@ -14,50 +13,50 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: BravelyDefault2.sln                        # Replace with your solution name, i.e. MyWpfApp.sln.
+      Solution_Name: BravelyDefault2.sln # Replace with your solution name, i.e. MyWpfApp.sln.
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        
-    - name: ACTIONS_ALLOW_UNSECURE_COMMANDS
-      id: ACTIONS_ALLOW_UNSECURE_COMMANDS
-      run: echo 'ACTIONS_ALLOW_UNSECURE_COMMANDS=true' >> $GITHUB_ENV
-      
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
+      - name: ACTIONS_ALLOW_UNSECURE_COMMANDS
+        id: ACTIONS_ALLOW_UNSECURE_COMMANDS
+        run: echo 'ACTIONS_ALLOW_UNSECURE_COMMANDS=true' >> $GITHUB_ENV
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
+      # Install the .NET Core workload
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
 
-    # Build an application
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Publish
-      run: dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true --self-contained false
-      
-    #- uses: "marvinpinto/action-automatic-releases@latest"
-    #  with:
-    #    repo_token: "${{ secrets.GITHUB_TOKEN }}"
-    #    prerelease: false
-    #    files: |
-    #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\publish\BravelyDefault2.dll.config
-    #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\BravelyDefault2.exe
-    #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\sni.dll
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v2
-      with:
+      # Restore the application to populate the obj folder with RuntimeIdentifiers
+      - name: Restore the application
+        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
+
+      # Build an application
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish -c Release -r win-x64 -p:PublishReadyToRun=true --self-contained false
+
+      #- uses: "marvinpinto/action-automatic-releases@latest"
+      #  with:
+      #    repo_token: "${{ secrets.GITHUB_TOKEN }}"
+      #    prerelease: false
+      #    files: |
+      #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\publish\BravelyDefault2.dll.config
+      #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\BravelyDefault2.exe
+      #      D:\a\BravelyDefault2\BravelyDefault2\BravelyDefault2\bin\Release\net5.0-windows\win-x64\sni.dll
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
           name: BravelyDefault2SaveEditor
           path: |
             BravelyDefault2\bin\Release\net5.0-windows\win-x64\publish
