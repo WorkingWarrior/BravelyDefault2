@@ -371,40 +371,13 @@ namespace BravelyDefault2 {
             }
         }
 
-        public List<uint> FindAddress(string name, uint index, bool header = false) {
-            byte[] buffer = header ? mHeader : mBuffer;
-            List<uint> result = new();
-
-            if(buffer == null) {
-                return result;
-            }
-
-            for(; index < mBuffer.Length; index++) {
-                if(buffer[index] != name[0]) {
-                    continue;
-                }
-
-                int len = 1;
-
-                for(; len < name.Length; len++) {
-                    if(buffer[index + len] != name[len]) {
-                        break;
-                    }
-                }
-
-                if(len >= name.Length) {
-                    result.Add(index);
-                }
-
-                index += (uint)len;
-            }
-
-            return result;
+        public List<uint> IndexesOf(string name, uint index, bool header = false) {
+            return Util.IndexesOf(header ? mHeader : mBuffer, name, (int)index);
         }
 
         private void Backup() {
             DateTime now = DateTime.Now;
-            String path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             path = System.IO.Path.Combine(path, "backup");
 
             if(!System.IO.Directory.Exists(path)) {

@@ -22,11 +22,15 @@ namespace BravelyDefault2 {
             SaveData.Instance().WriteNumber(address, Clamp(value, min, max));
         }
 
-        public static int SearchBytes(byte[] haystack, string needle, int index = 0) {
-            return SearchBytes(haystack, Encoding.UTF8.GetBytes(needle), index);
+        public static int IndexOf(byte[] haystack, string needle, int index = 0) {
+            return IndexOf(haystack, Encoding.UTF8.GetBytes(needle), index);
         }
 
-        public static int SearchBytes(byte[] haystack, byte[] needle, int index = 0) {
+        public static int IndexOf(byte[] haystack, byte[] needle, int index = 0) {
+            if(haystack == null) {
+                throw new ArgumentNullException();
+            }
+
             int len = needle.Length;
             int limit = haystack.Length - len;
 
@@ -47,14 +51,14 @@ namespace BravelyDefault2 {
             return -1;
         }
 
-        public static List<uint> SearchAllBytes(byte[] haystack, string needle, int index = 0) {
-            return SearchAllBytes(haystack, Encoding.UTF8.GetBytes(needle), index);
+        public static List<uint> IndexesOf(byte[] haystack, string needle, int index = 0) {
+            return IndexesOf(haystack, Encoding.UTF8.GetBytes(needle), index);
         }
-        public static List<uint> SearchAllBytes(byte[] haystack, byte[] needle, int index = 0) {
+        public static List<uint> IndexesOf(byte[] haystack, byte[] needle, int index = 0) {
             List<uint> result = new();
 
             while(index > -1) {
-                index = SearchBytes(haystack, needle, index);
+                index = IndexOf(haystack, needle, index);
 
                 if(index > -1) {
                     result.Add((uint)index);
@@ -74,7 +78,7 @@ namespace BravelyDefault2 {
 
         public static GVASData ReadData(String name, uint index) {
             GVAS gvas = new(null);
-            List<uint> list = SaveData.Instance().FindAddress(name, index);
+            List<uint> list = SaveData.Instance().IndexesOf(name, index);
 
             if(list.Count == 0) {
                 return null;
