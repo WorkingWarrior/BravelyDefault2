@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BravelyDefault2.Jobs;
+using System;
 
 namespace BravelyDefault2 {
     abstract partial class Character {

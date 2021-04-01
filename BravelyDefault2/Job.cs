@@ -1,4 +1,6 @@
-﻿namespace BravelyDefault2 {
+﻿using BravelyDefault2.Jobs;
+
+namespace BravelyDefault2 {
     class Job {
         public const string JobPrefix = "EJobEnum::";
         public virtual string SaveDataID => "";
