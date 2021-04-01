@@ -54,8 +54,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="39*"/>
-                                <RowDefinition Height="40*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Label x:Name="Label_Seth_HP" Grid.Column="0" Grid.Row="0" Content="HP" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Seth_HP" Grid.Column="1" Text="{Binding ViewModelSeth.HP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
@@ -67,6 +67,10 @@
                             <TextBox x:Name="TextBox_Seth_Max_MP" Grid.Column="1" Text="{Binding ViewModelSeth.MaxMP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                             <Label x:Name="Label_Seth_EXP" Content="EXP" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Seth_EXP" Grid.Column="1" Text="{Binding ViewModelSeth.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                            <Label x:Name="Label_Seth_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Seth_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobs}"/>
+                            <Label x:Name="Label_Seth_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Seth_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobs}"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Jobs">
@@ -354,8 +358,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="39*"/>
-                                <RowDefinition Height="40*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Label x:Name="Label_Gloria_HP" Grid.Column="0" Grid.Row="0" Content="HP" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Gloria_HP" Grid.Column="1" Text="{Binding ViewModelGloria.HP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
@@ -367,6 +371,10 @@
                             <TextBox x:Name="TextBox_Gloria_Max_MP" Grid.Column="1" Text="{Binding ViewModelGloria.MaxMP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                             <Label x:Name="Label_Gloria_EXP" Content="EXP" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Gloria_EXP" Grid.Column="1" Text="{Binding ViewModelGloria.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                            <Label x:Name="Label_Gloria_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Gloria_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobs}"/>
+                            <Label x:Name="Label_Gloria_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Gloria_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobs}"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Jobs">
@@ -646,8 +654,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="39*"/>
-                                <RowDefinition Height="40*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Label x:Name="Label_Elvis_HP" Grid.Column="0" Grid.Row="0" Content="HP" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Elvis_HP" Grid.Column="1" Text="{Binding ViewModelElvis.HP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
@@ -659,6 +667,10 @@
                             <TextBox x:Name="TextBox_Elvis_Max_MP" Grid.Column="1" Text="{Binding ViewModelElvis.MaxMP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                             <Label x:Name="Label_Elvis_EXP" Content="EXP" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Elvis_EXP" Grid.Column="1" Text="{Binding ViewModelElvis.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                            <Label x:Name="Label_Elvis_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Elvis_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobs}"/>
+                            <Label x:Name="Label_Elvis_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Elvis_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobs}"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Jobs">
@@ -938,8 +950,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="39*"/>
-                                <RowDefinition Height="40*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Label x:Name="Label_Adelle_HP" Grid.Column="0" Grid.Row="0" Content="HP" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Adelle_HP" Grid.Column="1" Text="{Binding ViewModelAdelle.HP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
@@ -951,6 +963,10 @@
                             <TextBox x:Name="TextBox_Adelle_Max_MP" Grid.Column="1" Text="{Binding ViewModelAdelle.MaxMP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                             <Label x:Name="Label_Adelle_EXP" Content="EXP" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Adelle_EXP" Grid.Column="1" Text="{Binding ViewModelAdelle.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
+                            <Label x:Name="Label_Adelle_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Adelle_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobs}"/>
+                            <Label x:Name="Label_Adelle_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Adelle_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobs}"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Jobs">

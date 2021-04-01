@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace BravelyDefault2 {
@@ -33,5 +34,6 @@ namespace BravelyDefault2 {
         public Character ViewModelGloria => SaveData.Characters.Single(c => c.Name == "Gloria");
         public Character ViewModelElvis => SaveData.Characters.Single(c => c.Name == "Elvis");
         public Character ViewModelAdelle => SaveData.Characters.Single(c => c.Name == "Adelle");
+        public List<ComboBoxPairs> CharacterJobs => ViewModelSeth.Jobs.Select(s => new ComboBoxPairs(s.SaveDataID, s.Name)).ToList();
     }
 }
