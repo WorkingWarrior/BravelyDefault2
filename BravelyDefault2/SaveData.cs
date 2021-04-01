@@ -115,7 +115,7 @@ namespace BravelyDefault2 {
 
             address = CalcAddress(address);
 
-            if(address + 4 > buffer.Length) {
+            if(address + Util.INTEGER_SIZE > buffer.Length) {
                 throw new IndexOutOfRangeException();
             }
 
@@ -157,11 +157,7 @@ namespace BravelyDefault2 {
         public bool ReadBit(uint address, uint bit, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
-            if(bit < 0) {
-                return false;
-            }
-
-            if(bit > 7) {
+            if(bit < 0 || bit > 7) {
                 return false;
             }
 
@@ -191,7 +187,7 @@ namespace BravelyDefault2 {
             address = CalcAddress(address);
 
             if(address + size > buffer.Length) {
-                return "";
+                throw new IndexOutOfRangeException();
             }
 
             byte[] tmp = new byte[size];
@@ -221,7 +217,7 @@ namespace BravelyDefault2 {
 
             address = CalcAddress(address);
 
-            if(address + 4 > buffer.Length) {
+            if(address + Util.INTEGER_SIZE > buffer.Length) {
                 throw new IndexOutOfRangeException();
             }
 
@@ -232,7 +228,7 @@ namespace BravelyDefault2 {
             byte[] result = BitConverter.GetBytes(value);
 
             try {
-                Array.Copy(result, 0, buffer, address, 4);
+                Array.Copy(result, 0, buffer, address, Util.INTEGER_SIZE);
             } catch(Exception e) {
                 Console.WriteLine("{0} Exception caught.", e);
             }

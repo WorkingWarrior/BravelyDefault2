@@ -4,6 +4,9 @@ using System.Text;
 
 namespace BravelyDefault2 {
     class Util {
+        public const int INTEGER_SIZE = 4;
+        public const int TERMINATOR_LENGTH = 1;
+
         public static T Clamp<T>(T value, T min, T max) where T : IComparable<T> {
             if(value.CompareTo(min) < 0) {
                 return min;
@@ -48,7 +51,7 @@ namespace BravelyDefault2 {
             return SearchAllBytes(haystack, Encoding.UTF8.GetBytes(needle), index);
         }
         public static List<uint> SearchAllBytes(byte[] haystack, byte[] needle, int index = 0) {
-            List<uint> result = new List<uint>();
+            List<uint> result = new();
 
             while(index > -1) {
                 index = SearchBytes(haystack, needle, index);
@@ -70,7 +73,7 @@ namespace BravelyDefault2 {
         }
 
         public static GVASData ReadData(String name, uint index) {
-            GVAS gvas = new GVAS(null);
+            GVAS gvas = new(null);
             List<uint> list = SaveData.Instance().FindAddress(name, index);
 
             if(list.Count == 0) {
