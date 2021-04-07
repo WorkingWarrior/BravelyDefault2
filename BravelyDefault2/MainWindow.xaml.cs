@@ -1,4 +1,6 @@
 ﻿using Microsoft.Win32;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,12 +16,14 @@ namespace BravelyDefault2 {
         }
 
         private void MenuItemFileOpen_Click(object sender, RoutedEventArgs e) {
-            OpenFileDialog dlg = new OpenFileDialog();
+            OpenFileDialog dlg = new();
+
             if(dlg.ShowDialog() == false) {
                 return;
             }
 
             SaveData.Instance().Open(dlg.FileName);
+
             DataContext = new ViewModel();
         }
 
@@ -28,7 +32,8 @@ namespace BravelyDefault2 {
         }
 
         private void MenuItemFileSaveAs_Click(object sender, RoutedEventArgs e) {
-            SaveFileDialog dlg = new SaveFileDialog();
+            SaveFileDialog dlg = new();
+
             if(dlg.ShowDialog() == false) {
                 return;
             }
@@ -37,7 +42,8 @@ namespace BravelyDefault2 {
         }
 
         private void MenuItemFileImport_Click(object sender, RoutedEventArgs e) {
-            OpenFileDialog dlg = new OpenFileDialog();
+            OpenFileDialog dlg = new();
+
             if(dlg.ShowDialog() == false) {
                 return;
             }
@@ -46,7 +52,8 @@ namespace BravelyDefault2 {
         }
 
         private void MenuItemFileExport_Click(object sender, RoutedEventArgs e) {
-            SaveFileDialog dlg = new SaveFileDialog();
+            SaveFileDialog dlg = new();
+
             if(dlg.ShowDialog() == false) {
                 return;
             }
@@ -63,8 +70,15 @@ namespace BravelyDefault2 {
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e) {
-            Regex regex = new Regex("[^0-9]+");
+            Regex regex = new("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void ComboBox_Seth_MainJob_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ComboBox combo = sender as ComboBox;
+            string jobID = combo.SelectedValue.ToString();
+
+            (DataContext as ViewModel).ViewModelSeth.MainJob = Job.FromID(jobID);
         }
     }
 }
