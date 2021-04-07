@@ -1,12 +1,14 @@
 ﻿namespace BravelyDefault2 {
     public class ComboBoxPairs {
-        public string _Key { get; set; }
-        public string _Value { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
 
         public ComboBoxPairs(string _key, string _value) {
-            _Key = _key;
-            _Value = _value;
+            Key = _key;
+            Value = _value;
         }
-        public override string ToString() => _Value;
+        public override string ToString() {
+            return Key;
+        }
     }
 }

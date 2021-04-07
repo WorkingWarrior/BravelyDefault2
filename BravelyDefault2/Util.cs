@@ -28,7 +28,7 @@ namespace BravelyDefault2 {
 
         public static int IndexOf(byte[] haystack, byte[] needle, int index = 0) {
             if(haystack == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             int len = needle.Length;
