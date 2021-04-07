@@ -11,7 +11,13 @@ namespace BravelyDefault2 {
         private byte[] mBuffer = null;
         private readonly System.Text.Encoding mEncode = System.Text.Encoding.UTF8;
         public uint Adventure { private get; set; } = 0;
-        public static Character[] Characters { get; private set; } = new Character[] { new Seth(), new Gloria(), new Elvis(), new Adelle() };
+
+        public static Dictionary<string, Character> Characters = new() {
+            { "Seth", new Seth() },
+            { "Gloria", new Gloria() },
+            { "Elvis", new Elvis() },
+            { "Adelle", new Adelle() }
+        };
 
         private SaveData() { }
 
@@ -51,7 +57,7 @@ namespace BravelyDefault2 {
                 return false;
             }
 
-            foreach(Character c in Characters) {
+            foreach(Character c in Characters.Values) {
                 c.FindOffsets(mBuffer);
                 c.Populate(mBuffer);
             }
@@ -69,7 +75,7 @@ namespace BravelyDefault2 {
             }
 
             #region CHARACTER_DATA_UPDATE
-            foreach(Character c in Characters) {
+            foreach(Character c in Characters.Values) {
                 c.UpdateBufferData(mBuffer);
             }
             #endregion
@@ -110,7 +116,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -123,7 +129,7 @@ namespace BravelyDefault2 {
         }
 
         private uint ReadNumber(byte[] buffer, int address) {
-            uint result = 0;
+            uint result = uint.MinValue;
 
             try {
                 result = BitConverter.ToUInt32(buffer, address);
@@ -139,7 +145,7 @@ namespace BravelyDefault2 {
             byte[] result = new byte[size];
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -162,7 +168,7 @@ namespace BravelyDefault2 {
             }
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -181,7 +187,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -203,8 +209,36 @@ namespace BravelyDefault2 {
             return mEncode.GetString(tmp).Trim('\0');
         }
 
-        public void ReadArray(uint address, uint size) {
+        public void ReadArray(uint address, uint size, bool header = false) {
             throw new NotImplementedException();
+        }
+
+        public bool ReadBoolean(uint address, bool header = false) {
+            byte[] buffer = header ? mHeader : mBuffer;
+
+            if(buffer == null) {
+                throw new ArgumentNullException("Buffer doesn't exist");
+            }
+
+            address = CalcAddress(address);
+
+            if(address + 2 > buffer.Length) {
+                throw new IndexOutOfRangeException();
+            }
+
+            ushort result = ushort.MinValue;
+
+            try {
+                result = BitConverter.ToUInt16(buffer, (int)address);
+            } catch(Exception e) {
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+
+            return result switch {
+                0 => false,
+                1 => true,
+                _ => throw new InvalidOperationException("Something went really bad")
+            };
         }
 
         #region WRITE_NUMBER
@@ -244,7 +278,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -266,7 +300,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -285,7 +319,7 @@ namespace BravelyDefault2 {
             byte[] destBuffer = header ? mHeader : mBuffer;
 
             if(destBuffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -305,7 +339,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -321,7 +355,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             from = CalcAddress(from);
@@ -346,7 +380,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("Buffer doesn't exist");
             }
 
             from = CalcAddress(from);

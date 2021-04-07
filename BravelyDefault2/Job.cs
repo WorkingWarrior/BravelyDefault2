@@ -1,13 +1,31 @@
 ﻿using BravelyDefault2.Jobs;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace BravelyDefault2 {
     class Job {
         public const string JobPrefix = "EJobEnum::";
-        public virtual string SaveDataID => "";
-        public virtual string Name => "";
-        public ushort Offset { get; set; }
+        public const string MainJobID = "MainJobId";
+        public const string SecondJobID = "OptionalJobId";
+        public const int NameValueOffset = 0x2B;
+        public const int EXPValueOffset = 0x21;
+        public const int LevelLimitValueOffset = 0x57;
+        public virtual string SaveDataID => string.Empty;
+        public virtual string Name => string.Empty;
+        public uint Offset { get; set; }
         public int EXP { get; set; }
         public bool LevelLimitUnlocked { get; set; }
+
+        public static readonly Job[] List = {
+            new Freelancer(), new Monk(), new WhiteMage(), new BlackMage(),
+            new Vanguard(), new Bard(), new BeastMaster(), new Thief(),
+            new Gambler(), new Berserker(), new RedMage(), new Ranger(),
+            new Shieldmaster(), new Pictomancer(), new Dragoon(), new Spiritmaster(),
+            new Swordmaster(), new Oracle(), new SalveMaker(), new Arcanist(),
+            new Bastion(), new Phantom(), new Hellblade(), new Bravebearer()
+        };
         public void RefreshOffset(byte[] haystack, int index = 0) {
             int raw_offset = Util.IndexOf(haystack, SaveDataID, index);
 
@@ -15,91 +33,38 @@ namespace BravelyDefault2 {
                 return;
             }
 
-            Offset = (ushort)(raw_offset + SaveDataID.Length + 1 + 0x21);
+            Offset = (uint)(raw_offset + SaveDataID.Length + Util.TERMINATOR_LENGTH);
+
+            //Offset = (raw_offset + SaveDataID.Length + Util.TERMINATOR_LENGTH + EXPValueOffset);
         }
 
-        static public Job GetJobFromID(string saveDataID) {
+        public static string NameFromID(string saveDataID) {
             if(string.IsNullOrEmpty(saveDataID.Trim())) {
-                throw new System.ArgumentException();
+                throw new ArgumentException(message: "Invalid job ID");
+            }
+
+            string name = string.Empty;
+
+            try {
+                name = List.First(j => j.SaveDataID == saveDataID).Name;
+            } catch(Exception e) {
+                Debug.WriteLine(e);
+            }
+
+            return(name);
+        }
+
+        public static Job FromID(string saveDataID) {
+            if(string.IsNullOrEmpty(saveDataID.Trim())) {
+                throw new ArgumentException(message: "Invalid job ID");
             }
 
             Job j = new();
 
-            switch(saveDataID) {
-                case "JE_Sobriety":
-                    j = new Freelancer();
-                    break;
-                case "JE_Monk":
-                    j = new Monk();
-                    break;
-                case "JE_White_Mage":
-                    j = new WhiteMage();
-                    break;
-                case "JE_Black_Mage":
-                    j = new BlackMage();
-                    break;
-                case "JE_Vanguard":
-                    j = new Vanguard();
-                    break;
-                case "JE_Troubadour":
-                    j = new Bard();
-                    break;
-                case "JE_Tamer":
-                    j = new BeastMaster();
-                    break;
-                case "JE_Thief":
-                    j = new Thief();
-                    break;
-                case "JE_Gambler":
-                    j = new Gambler();
-                    break;
-                case "JE_Berzerk":
-                    j = new Berserker();
-                    break;
-                case "JE_Red_Mage":
-                    j = new RedMage();
-                    break;
-                case "JE_Hunter":
-                    j = new Ranger();
-                    break;
-                case "JE_Shield_Master":
-                    j = new Shieldmaster();
-                    break;
-                case "JE_Pictomancer":
-                    j = new Pictomancer();
-                    break;
-                case "JE_Dragoon_Warrior":
-                    j = new Dragoon();
-                    break;
-                case "JE_Master":
-                    j = new Spiritmaster();
-                    break;
-                case "JE_Sword_Master":
-                    j = new Swordmaster();
-                    break;
-                case "JE_Oracle":
-                    j = new Oracle();
-                    break;
-                case "JE_Doctor":
-                    j = new SalveMaker();
-                    break;
-                case "JE_Demon":
-                    j = new Arcanist();
-                    break;
-                case "JE_Judgement":
-                    j = new Bastion();
-                    break;
-                case "JE_Phantom":
-                    j = new Phantom();
-                    break;
-                case "JE_Cursed_Sword":
-                    j = new Hellblade();
-                    break;
-                case "JE_Brave":
-                    j = new Bravebearer();
-                    break;
-                default:
-                    break;
+            try {
+                j = List.First(j => j.SaveDataID == saveDataID);
+            } catch(Exception e) {
+                Debug.WriteLine(e);
             }
 
             return j;
