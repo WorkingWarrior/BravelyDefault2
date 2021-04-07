@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace BravelyDefault2 {
@@ -30,10 +29,10 @@ namespace BravelyDefault2 {
             }
         }
 
-        public Character ViewModelSeth => SaveData.Characters.Single(c => c.Name == "Seth");
-        public Character ViewModelGloria => SaveData.Characters.Single(c => c.Name == "Gloria");
-        public Character ViewModelElvis => SaveData.Characters.Single(c => c.Name == "Elvis");
-        public Character ViewModelAdelle => SaveData.Characters.Single(c => c.Name == "Adelle");
-        public List<ComboBoxPairs> CharacterJobs => ViewModelSeth.Jobs.Select(s => new ComboBoxPairs(s.SaveDataID, s.Name)).ToList();
+        public Character ViewModelSeth => SaveData.Characters["Seth"];
+        public Character ViewModelGloria => SaveData.Characters["Gloria"];
+        public Character ViewModelElvis => SaveData.Characters["Elvis"];
+        public Character ViewModelAdelle => SaveData.Characters["Adelle"];
+        public Dictionary<string, string> CharacterJobsList => Job.List.Select(job => new { job.SaveDataID, job.Name }).ToDictionary(x => x.Name, x => x.SaveDataID);
     }
 }
