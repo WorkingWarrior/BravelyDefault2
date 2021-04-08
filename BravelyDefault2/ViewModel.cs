@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BravelyDefault2 {
@@ -7,8 +8,14 @@ namespace BravelyDefault2 {
 
         }
 
+        public bool SaveLoaded => SaveData.Instance().Loaded;
+
         public uint Money {
             get {
+                if(!SaveData.Instance().Loaded) {
+                    return 0;
+                }
+
                 GVASData data = Util.ReadData("money");
 
                 if(data == null) {
@@ -27,6 +34,16 @@ namespace BravelyDefault2 {
 
                 Util.WriteNumber(data.Address, value, 0, 9999999);
             }
+        }
+
+        public TimeSpan PlayTime {
+            get => SaveData.Instance().PlayTime;
+            set { }
+        }
+
+        public DateTime SaveDate {
+            get => SaveData.Instance().SaveDate;
+            set { }
         }
 
         public Character ViewModelSeth => SaveData.Characters["Seth"];

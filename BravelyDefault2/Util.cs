@@ -4,9 +4,6 @@ using System.Text;
 
 namespace BravelyDefault2 {
     class Util {
-        public const int INTEGER_SIZE = 4;
-        public const int TERMINATOR_LENGTH = 1;
-
         public static T Clamp<T>(T value, T min, T max) where T : IComparable<T> {
             if(value.CompareTo(min) < 0) {
                 return min;
@@ -28,7 +25,7 @@ namespace BravelyDefault2 {
 
         public static int IndexOf(byte[] haystack, byte[] needle, int index = 0) {
             if(haystack == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(haystack), "Buffer doesn't exist");
             }
 
             int len = needle.Length;

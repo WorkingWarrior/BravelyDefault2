@@ -31,7 +31,7 @@ namespace BravelyDefault2 {
                 return;
             }
 
-            Offset = (uint)(raw_offset + SaveDataID.Length + Util.TERMINATOR_LENGTH);
+            Offset = (uint)(raw_offset + SaveDataID.Length + sizeof(byte));
         }
 
         public static string NameFromID(string saveDataID) {

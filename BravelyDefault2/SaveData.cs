@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace BravelyDefault2 {
     class SaveData {
         private const int HeaderLength = 0x0C;
+        private const int TimeSpanValueOffset = 0x1A;
         private static SaveData mThis;
         static readonly byte[] magic = new byte[] { 0x53, 0x41, 0x56, 0x45 };
         private string mFileName = null;
@@ -11,6 +12,9 @@ namespace BravelyDefault2 {
         private byte[] mBuffer = null;
         private readonly System.Text.Encoding mEncode = System.Text.Encoding.UTF8;
         public uint Adventure { private get; set; } = 0;
+        public TimeSpan PlayTime { get; set; }
+        public DateTime SaveDate { get; set; }
+        public bool Loaded { get; set; } = false;
 
         public static Dictionary<string, Character> Characters = new() {
             { "Seth", new Seth() },
@@ -48,7 +52,7 @@ namespace BravelyDefault2 {
 
             byte[] comp = new byte[tmp.Length - mHeader.Length];
 
-            Array.Copy(tmp, mHeader.Length, comp, 0, comp.Length);
+            Array.Copy(tmp, HeaderLength, comp, 0, comp.Length);
             Array.Copy(tmp, mHeader, mHeader.Length);
 
             try {
@@ -62,7 +66,10 @@ namespace BravelyDefault2 {
                 c.Populate(mBuffer);
             }
 
+            ReadGlobalProperties();
+
             mFileName = filename;
+            Loaded = true;
 
             Backup();
 
@@ -112,16 +119,30 @@ namespace BravelyDefault2 {
             System.IO.File.WriteAllBytes(filename, mBuffer);
         }
 
+        public void ReadGlobalProperties() {
+            int saveDateOffset = Util.IndexOf(mBuffer, "DateTime", 0x450);
+
+            if(saveDateOffset > 0) {
+                SaveDate = ReadDateTime((uint)(saveDateOffset + TimeSpanValueOffset));
+            }
+
+            int timeSpanOffset = Util.IndexOf(mBuffer, "Timespan");
+
+            if(timeSpanOffset > 0) {
+                PlayTime = ReadTimeSpan((uint)timeSpanOffset + TimeSpanValueOffset);
+            }
+        }
+
         public uint ReadNumber(uint address, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
 
-            if(address + Util.INTEGER_SIZE > buffer.Length) {
+            if(address + sizeof(uint) > buffer.Length) {
                 throw new IndexOutOfRangeException();
             }
 
@@ -145,7 +166,7 @@ namespace BravelyDefault2 {
             byte[] result = new byte[size];
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -168,7 +189,7 @@ namespace BravelyDefault2 {
             }
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -187,7 +208,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -217,12 +238,12 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
 
-            if(address + 2 > buffer.Length) {
+            if(address + sizeof(ushort) > buffer.Length) {
                 throw new IndexOutOfRangeException();
             }
 
@@ -241,17 +262,65 @@ namespace BravelyDefault2 {
             };
         }
 
+        public TimeSpan ReadTimeSpan(uint address, bool header = false) {
+            byte[] buffer = header ? mHeader : mBuffer;
+
+            if(buffer == null) {
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
+            }
+
+            address = CalcAddress(address);
+
+            if(address + sizeof(long) > buffer.Length) {
+                throw new IndexOutOfRangeException();
+            }
+
+            long ticks = 0;
+
+            try {
+                ticks = BitConverter.ToInt64(buffer, (int)address);
+            } catch(Exception e) {
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+
+            return TimeSpan.FromTicks(ticks);
+        }
+
+        public DateTime ReadDateTime(uint address, bool header = false) {
+            byte[] buffer = header ? mHeader : mBuffer;
+
+            if(buffer == null) {
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
+            }
+
+            address = CalcAddress(address);
+
+            if(address + sizeof(long) > buffer.Length) {
+                throw new IndexOutOfRangeException();
+            }
+
+            long time = 0;
+
+            try {
+                time = BitConverter.ToInt64(buffer, (int)address);
+            } catch(Exception e) {
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+
+            return DateTime.FromBinary(time);
+        }
+
         #region WRITE_NUMBER
         public void WriteNumber(uint address, uint value, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
 
-            if(address + Util.INTEGER_SIZE > buffer.Length) {
+            if(address + sizeof(uint) > buffer.Length) {
                 throw new IndexOutOfRangeException();
             }
 
@@ -262,7 +331,7 @@ namespace BravelyDefault2 {
             byte[] result = BitConverter.GetBytes(value);
 
             try {
-                Array.Copy(result, 0, buffer, address, Util.INTEGER_SIZE);
+                Array.Copy(result, 0, buffer, address, sizeof(int));
             } catch(Exception e) {
                 Console.WriteLine("{0} Exception caught.", e);
             }
@@ -278,7 +347,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -300,7 +369,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -318,8 +387,12 @@ namespace BravelyDefault2 {
         public void WriteValue(uint address, byte[] buffer, bool header = false) {
             byte[] destBuffer = header ? mHeader : mBuffer;
 
+            if(buffer == null) {
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
+            }
+
             if(destBuffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(destBuffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -335,11 +408,29 @@ namespace BravelyDefault2 {
             }
         }
 
+        public void WriteBoolean(uint address, bool value, bool header = false) {
+            byte[] buffer = header ? mHeader : mBuffer;
+
+            if(buffer == null) {
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
+            }
+
+            address = CalcAddress(address);
+
+            if(address + sizeof(ushort) > buffer.Length) {
+                throw new IndexOutOfRangeException();
+            }
+
+            byte[] tmp = BitConverter.GetBytes(Convert.ToUInt16(value));
+
+            WriteValue(address, tmp, header);
+        }
+
         public void Fill(uint address, uint size, byte number, bool header = false) {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             address = CalcAddress(address);
@@ -355,7 +446,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             from = CalcAddress(from);
@@ -380,7 +471,7 @@ namespace BravelyDefault2 {
             byte[] buffer = header ? mHeader : mBuffer;
 
             if(buffer == null) {
-                throw new ArgumentNullException("Buffer doesn't exist");
+                throw new ArgumentNullException(nameof(buffer), "Buffer doesn't exist");
             }
 
             from = CalcAddress(from);
@@ -412,6 +503,7 @@ namespace BravelyDefault2 {
         private void Backup() {
             DateTime now = DateTime.Now;
             string path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
             path = System.IO.Path.Combine(path, "backup");
 
             if(!System.IO.Directory.Exists(path)) {
@@ -419,7 +511,7 @@ namespace BravelyDefault2 {
             }
 
             path = System.IO.Path.Combine(path,
-                String.Format("{0:0000}-{1:00}-{2:00} {3:00}-{4:00}", now.Year, now.Month, now.Day, now.Hour, now.Minute));
+                string.Format("{0:0000}-{1:00}-{2:00} {3:00}-{4:00}", now.Year, now.Month, now.Day, now.Hour, now.Minute));
             System.IO.File.Copy(mFileName, path, true);
         }
     }

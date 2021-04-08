@@ -10,6 +10,11 @@
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <controls:JobToTextConverter x:Key="JobToTextConverter" />
+        <controls:TimeSpanToTextConverter x:Key="TimeSpanToTextConverter" />
+        <controls:DateTimeToTextConverter x:Key="DateTimeToTextConverter" />
+    </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -22,25 +27,28 @@
                 <MenuItem Header="Exit" Click="MenuItemFileExit_Click"/>
             </MenuItem>
         </Menu>
-        <TabControl SelectionChanged="TabControl_SelectionChanged">
-            <TabItem Header="Basic">
-                <Grid>
+        <TabControl>
+            <TabItem Header="Basic" IsEnabled="{Binding SaveLoaded}">
+                <Grid IsEnabled="{Binding SaveLoaded}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="5"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="25*"/>
-                        <RowDefinition Height="25*"/>
-                        <RowDefinition Height="298*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label Content="Money" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Money, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+                    <Label Grid.Column="0" Grid.Row="0" Content="Money" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Money, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+                    <Label Grid.Column="0" Grid.Row="1" Content="Save time" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding SaveDate, Converter={StaticResource DateTimeToTextConverter}}" VerticalAlignment="Center" IsReadOnly="True"/>
+                    <Label Grid.Column="0" Grid.Row="2" Content="Play time" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding PlayTime, Converter={StaticResource TimeSpanToTextConverter}}" VerticalAlignment="Center" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Seth">
+            <TabItem Header="Seth" IsEnabled="{Binding SaveLoaded}">
                 <TabControl>
                     <TabItem Header="General">
                         <Grid>
@@ -49,6 +57,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -67,10 +76,12 @@
                             <TextBox x:Name="TextBox_Seth_Max_MP" Grid.Column="1" Text="{Binding ViewModelSeth.MaxMP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                             <Label x:Name="Label_Seth_EXP" Content="EXP" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Seth_EXP" Grid.Column="1" Text="{Binding ViewModelSeth.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
-                            <Label x:Name="Label_Seth_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ComboBox_Seth_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" SelectionChanged="ComboBox_Seth_MainJob_SelectionChanged" DisplayMemberPath="Key" SelectedValuePath="Value"/>
-                            <Label x:Name="Label_Seth_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ComboBox_Seth_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                            <Label x:Name="Label_Seth_Level" Content="Level" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
+                            <TextBox x:Name="TextBox_Seth_Level" Grid.Column="1" Text="{Binding ViewModelSeth.Level, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="5" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox" IsEnabled="False"/>
+                            <Label x:Name="Label_Seth_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Seth_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding ViewModelSeth.MainJob, Converter={StaticResource JobToTextConverter}, Mode=OneWay}" IsEnabled="False"/>
+                            <Label x:Name="Label_Seth_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="7" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Seth_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="7" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding ViewModelSeth.SecondJob, Converter={StaticResource JobToTextConverter}, Mode=OneWay}" IsEnabled="False"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Jobs">
@@ -89,38 +100,38 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <controls:JobBox GroupLabel="Freelancer" EXP="{Binding ViewModelSeth.Jobs[0].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[0].LevelLimitUnlocked}" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Monk" EXP="{Binding ViewModelSeth.Jobs[1].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[1].LevelLimitUnlocked}" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="White Mage" EXP="{Binding ViewModelSeth.Jobs[2].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[2].LevelLimitUnlocked}" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Black Mage" EXP="{Binding ViewModelSeth.Jobs[3].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[3].LevelLimitUnlocked}" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Vanguard" EXP="{Binding ViewModelSeth.Jobs[4].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[4].LevelLimitUnlocked}" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Bard" EXP="{Binding ViewModelSeth.Jobs[5].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[5].LevelLimitUnlocked}" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Freelancer" EXP="{Binding ViewModelSeth.Jobs[0].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[0].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Monk" EXP="{Binding ViewModelSeth.Jobs[1].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[1].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="White Mage" EXP="{Binding ViewModelSeth.Jobs[2].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[2].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Black Mage" EXP="{Binding ViewModelSeth.Jobs[3].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[3].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Vanguard" EXP="{Binding ViewModelSeth.Jobs[4].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[4].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Bard" EXP="{Binding ViewModelSeth.Jobs[5].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[5].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Beast Master" EXP="{Binding ViewModelSeth.Jobs[6].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[6].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Thief" EXP="{Binding ViewModelSeth.Jobs[7].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[7].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Gambler" EXP="{Binding ViewModelSeth.Jobs[8].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[8].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Berserker" EXP="{Binding ViewModelSeth.Jobs[9].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[9].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Red Mage" EXP="{Binding ViewModelSeth.Jobs[10].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[10].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Ranger" EXP="{Binding ViewModelSeth.Jobs[11].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[11].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Beast Master" EXP="{Binding ViewModelSeth.Jobs[6].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[6].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Thief" EXP="{Binding ViewModelSeth.Jobs[7].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[7].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Gambler" EXP="{Binding ViewModelSeth.Jobs[8].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[8].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Berserker" EXP="{Binding ViewModelSeth.Jobs[9].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[9].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Red Mage" EXP="{Binding ViewModelSeth.Jobs[10].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[10].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Ranger" EXP="{Binding ViewModelSeth.Jobs[11].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[11].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Shieldmaster" EXP="{Binding ViewModelSeth.Jobs[12].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[12].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Pictomancer" EXP="{Binding ViewModelSeth.Jobs[13].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[13].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Dragoon" EXP="{Binding ViewModelSeth.Jobs[14].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[14].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Spiritmaster" EXP="{Binding ViewModelSeth.Jobs[15].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[15].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Swordmaster" EXP="{Binding ViewModelSeth.Jobs[16].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[16].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Oracle" EXP="{Binding ViewModelSeth.Jobs[17].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[17].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Shieldmaster" EXP="{Binding ViewModelSeth.Jobs[12].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[12].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Pictomancer" EXP="{Binding ViewModelSeth.Jobs[13].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[13].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Dragoon" EXP="{Binding ViewModelSeth.Jobs[14].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[14].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Spiritmaster" EXP="{Binding ViewModelSeth.Jobs[15].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[15].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Swordmaster" EXP="{Binding ViewModelSeth.Jobs[16].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[16].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Oracle" EXP="{Binding ViewModelSeth.Jobs[17].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[17].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Salve-Maker" EXP="{Binding ViewModelSeth.Jobs[18].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[18].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Arcanist" EXP="{Binding ViewModelSeth.Jobs[19].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[19].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Bastion" EXP="{Binding ViewModelSeth.Jobs[20].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[20].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Phantom" EXP="{Binding ViewModelSeth.Jobs[21].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[21].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Hellblade" EXP="{Binding ViewModelSeth.Jobs[22].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[22].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Bravebearer" EXP="{Binding ViewModelSeth.Jobs[23].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[23].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Salve-Maker" EXP="{Binding ViewModelSeth.Jobs[18].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[18].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Arcanist" EXP="{Binding ViewModelSeth.Jobs[19].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[19].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Bastion" EXP="{Binding ViewModelSeth.Jobs[20].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[20].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Phantom" EXP="{Binding ViewModelSeth.Jobs[21].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[21].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Hellblade" EXP="{Binding ViewModelSeth.Jobs[22].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[22].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Bravebearer" EXP="{Binding ViewModelSeth.Jobs[23].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelSeth.Jobs[23].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="5"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
             </TabItem>
-            <TabItem Header="Gloria">
+            <TabItem Header="Gloria" IsEnabled="{Binding SaveLoaded}">
                 <TabControl>
                     <TabItem Header="General">
                         <Grid>
@@ -129,6 +140,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -147,10 +159,12 @@
                             <TextBox x:Name="TextBox_Gloria_Max_MP" Grid.Column="1" Text="{Binding ViewModelGloria.MaxMP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                             <Label x:Name="Label_Gloria_EXP" Content="EXP" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Gloria_EXP" Grid.Column="1" Text="{Binding ViewModelGloria.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
-                            <Label x:Name="Label_Gloria_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ComboBox_Gloria_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
-                            <Label x:Name="Label_Gloria_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ComboBox_Gloria_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                            <Label x:Name="Label_Gloria_Level" Content="Level" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
+                            <TextBox x:Name="TextBox_Gloria_Level" Grid.Column="1" Text="{Binding ViewModelGloria.Level, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="5" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox" IsEnabled="False"/>
+                            <Label x:Name="Label_Gloria_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Gloria_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding ViewModelGloria.MainJob, Converter={StaticResource JobToTextConverter}, Mode=OneWay}" IsEnabled="False"/>
+                            <Label x:Name="Label_Gloria_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="7" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Gloria_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="7" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding ViewModelGloria.SecondJob, Converter={StaticResource JobToTextConverter}, Mode=OneWay}" IsEnabled="False"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Jobs">
@@ -169,38 +183,38 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <controls:JobBox GroupLabel="Freelancer" EXP="{Binding ViewModelGloria.Jobs[0].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[0].LevelLimitUnlocked}" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Monk" EXP="{Binding ViewModelGloria.Jobs[1].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[1].LevelLimitUnlocked}" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="White Mage" EXP="{Binding ViewModelGloria.Jobs[2].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[2].LevelLimitUnlocked}" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Black Mage" EXP="{Binding ViewModelGloria.Jobs[3].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[3].LevelLimitUnlocked}" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Vanguard" EXP="{Binding ViewModelGloria.Jobs[4].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[4].LevelLimitUnlocked}" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Bard" EXP="{Binding ViewModelGloria.Jobs[5].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[5].LevelLimitUnlocked}" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Freelancer" EXP="{Binding ViewModelGloria.Jobs[0].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[0].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Monk" EXP="{Binding ViewModelGloria.Jobs[1].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[1].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="White Mage" EXP="{Binding ViewModelGloria.Jobs[2].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[2].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Black Mage" EXP="{Binding ViewModelGloria.Jobs[3].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[3].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Vanguard" EXP="{Binding ViewModelGloria.Jobs[4].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[4].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Bard" EXP="{Binding ViewModelGloria.Jobs[5].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[5].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Beast Master" EXP="{Binding ViewModelGloria.Jobs[6].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[6].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Thief" EXP="{Binding ViewModelGloria.Jobs[7].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[7].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Gambler" EXP="{Binding ViewModelGloria.Jobs[8].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[8].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Berserker" EXP="{Binding ViewModelGloria.Jobs[9].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[9].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Red Mage" EXP="{Binding ViewModelGloria.Jobs[10].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[10].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Ranger" EXP="{Binding ViewModelGloria.Jobs[11].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[11].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Beast Master" EXP="{Binding ViewModelGloria.Jobs[6].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[6].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Thief" EXP="{Binding ViewModelGloria.Jobs[7].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[7].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Gambler" EXP="{Binding ViewModelGloria.Jobs[8].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[8].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Berserker" EXP="{Binding ViewModelGloria.Jobs[9].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[9].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Red Mage" EXP="{Binding ViewModelGloria.Jobs[10].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[10].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Ranger" EXP="{Binding ViewModelGloria.Jobs[11].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[11].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Shieldmaster" EXP="{Binding ViewModelGloria.Jobs[12].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[12].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Pictomancer" EXP="{Binding ViewModelGloria.Jobs[13].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[13].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Dragoon" EXP="{Binding ViewModelGloria.Jobs[14].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[14].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Spiritmaster" EXP="{Binding ViewModelGloria.Jobs[15].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[15].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Swordmaster" EXP="{Binding ViewModelGloria.Jobs[16].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[16].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Oracle" EXP="{Binding ViewModelGloria.Jobs[17].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[17].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Shieldmaster" EXP="{Binding ViewModelGloria.Jobs[12].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[12].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Pictomancer" EXP="{Binding ViewModelGloria.Jobs[13].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[13].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Dragoon" EXP="{Binding ViewModelGloria.Jobs[14].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[14].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Spiritmaster" EXP="{Binding ViewModelGloria.Jobs[15].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[15].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Swordmaster" EXP="{Binding ViewModelGloria.Jobs[16].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[16].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Oracle" EXP="{Binding ViewModelGloria.Jobs[17].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[17].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Salve-Maker" EXP="{Binding ViewModelGloria.Jobs[18].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[18].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Arcanist" EXP="{Binding ViewModelGloria.Jobs[19].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[19].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Bastion" EXP="{Binding ViewModelGloria.Jobs[20].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[20].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Phantom" EXP="{Binding ViewModelGloria.Jobs[21].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[21].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Hellblade" EXP="{Binding ViewModelGloria.Jobs[22].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[22].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Bravebearer" EXP="{Binding ViewModelGloria.Jobs[23].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[23].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Salve-Maker" EXP="{Binding ViewModelGloria.Jobs[18].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[18].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Arcanist" EXP="{Binding ViewModelGloria.Jobs[19].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[19].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Bastion" EXP="{Binding ViewModelGloria.Jobs[20].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[20].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Phantom" EXP="{Binding ViewModelGloria.Jobs[21].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[21].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Hellblade" EXP="{Binding ViewModelGloria.Jobs[22].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[22].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Bravebearer" EXP="{Binding ViewModelGloria.Jobs[23].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelGloria.Jobs[23].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="5"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
             </TabItem>
-            <TabItem Header="Elvis">
+            <TabItem Header="Elvis" IsEnabled="{Binding SaveLoaded}">
                 <TabControl>
                     <TabItem Header="General">
                         <Grid>
@@ -209,6 +223,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -227,10 +242,12 @@
                             <TextBox x:Name="TextBox_Elvis_Max_MP" Grid.Column="1" Text="{Binding ViewModelElvis.MaxMP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                             <Label x:Name="Label_Elvis_EXP" Content="EXP" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Elvis_EXP" Grid.Column="1" Text="{Binding ViewModelElvis.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
-                            <Label x:Name="Label_Elvis_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ComboBox_Elvis_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
-                            <Label x:Name="Label_Elvis_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ComboBox_Elvis_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                            <Label x:Name="Label_Elvis_Level" Content="Level" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
+                            <TextBox x:Name="TextBox_Elvis_Level" Grid.Column="1" Text="{Binding ViewModelElvis.Level, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="5" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox" IsEnabled="False"/>
+                            <Label x:Name="Label_Elvis_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Elvis_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding ViewModelElvis.MainJob, Converter={StaticResource JobToTextConverter}, Mode=OneWay}" IsEnabled="False"/>
+                            <Label x:Name="Label_Elvis_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="7" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Elvis_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="7" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding ViewModelElvis.SecondJob, Converter={StaticResource JobToTextConverter}, Mode=OneWay}" IsEnabled="False"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Jobs">
@@ -249,38 +266,38 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <controls:JobBox GroupLabel="Freelancer" EXP="{Binding ViewModelElvis.Jobs[0].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[0].LevelLimitUnlocked}" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Monk" EXP="{Binding ViewModelElvis.Jobs[1].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[1].LevelLimitUnlocked}" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="White Mage" EXP="{Binding ViewModelElvis.Jobs[2].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[2].LevelLimitUnlocked}" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Black Mage" EXP="{Binding ViewModelElvis.Jobs[3].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[3].LevelLimitUnlocked}" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Vanguard" EXP="{Binding ViewModelElvis.Jobs[4].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[4].LevelLimitUnlocked}" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Bard" EXP="{Binding ViewModelElvis.Jobs[5].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[5].LevelLimitUnlocked}" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Freelancer" EXP="{Binding ViewModelElvis.Jobs[0].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[0].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Monk" EXP="{Binding ViewModelElvis.Jobs[1].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[1].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="White Mage" EXP="{Binding ViewModelElvis.Jobs[2].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[2].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Black Mage" EXP="{Binding ViewModelElvis.Jobs[3].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[3].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Vanguard" EXP="{Binding ViewModelElvis.Jobs[4].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[4].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Bard" EXP="{Binding ViewModelElvis.Jobs[5].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[5].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Beast Master" EXP="{Binding ViewModelElvis.Jobs[6].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[6].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Thief" EXP="{Binding ViewModelElvis.Jobs[7].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[7].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Gambler" EXP="{Binding ViewModelElvis.Jobs[8].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[8].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Berserker" EXP="{Binding ViewModelElvis.Jobs[9].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[9].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Red Mage" EXP="{Binding ViewModelElvis.Jobs[10].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[10].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Ranger" EXP="{Binding ViewModelElvis.Jobs[11].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[11].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Beast Master" EXP="{Binding ViewModelElvis.Jobs[6].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[6].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Thief" EXP="{Binding ViewModelElvis.Jobs[7].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[7].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Gambler" EXP="{Binding ViewModelElvis.Jobs[8].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[8].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Berserker" EXP="{Binding ViewModelElvis.Jobs[9].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[9].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Red Mage" EXP="{Binding ViewModelElvis.Jobs[10].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[10].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Ranger" EXP="{Binding ViewModelElvis.Jobs[11].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[11].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Shieldmaster" EXP="{Binding ViewModelElvis.Jobs[12].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[12].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Pictomancer" EXP="{Binding ViewModelElvis.Jobs[13].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[13].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Dragoon" EXP="{Binding ViewModelElvis.Jobs[14].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[14].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Spiritmaster" EXP="{Binding ViewModelElvis.Jobs[15].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[15].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Swordmaster" EXP="{Binding ViewModelElvis.Jobs[16].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[16].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Oracle" EXP="{Binding ViewModelElvis.Jobs[17].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[17].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Shieldmaster" EXP="{Binding ViewModelElvis.Jobs[12].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[12].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Pictomancer" EXP="{Binding ViewModelElvis.Jobs[13].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[13].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Dragoon" EXP="{Binding ViewModelElvis.Jobs[14].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[14].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Spiritmaster" EXP="{Binding ViewModelElvis.Jobs[15].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[15].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Swordmaster" EXP="{Binding ViewModelElvis.Jobs[16].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[16].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Oracle" EXP="{Binding ViewModelElvis.Jobs[17].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[17].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Salve-Maker" EXP="{Binding ViewModelElvis.Jobs[18].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[18].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Arcanist" EXP="{Binding ViewModelElvis.Jobs[19].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[19].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Bastion" EXP="{Binding ViewModelElvis.Jobs[20].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[20].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Phantom" EXP="{Binding ViewModelElvis.Jobs[21].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[21].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Hellblade" EXP="{Binding ViewModelElvis.Jobs[22].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[22].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Bravebearer" EXP="{Binding ViewModelElvis.Jobs[23].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[23].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Salve-Maker" EXP="{Binding ViewModelElvis.Jobs[18].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[18].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Arcanist" EXP="{Binding ViewModelElvis.Jobs[19].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[19].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Bastion" EXP="{Binding ViewModelElvis.Jobs[20].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[20].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Phantom" EXP="{Binding ViewModelElvis.Jobs[21].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[21].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Hellblade" EXP="{Binding ViewModelElvis.Jobs[22].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[22].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Bravebearer" EXP="{Binding ViewModelElvis.Jobs[23].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelElvis.Jobs[23].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="5"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
             </TabItem>
-            <TabItem Header="Adelle">
+            <TabItem Header="Adelle" IsEnabled="{Binding SaveLoaded}">
                 <TabControl>
                     <TabItem Header="General">
                         <Grid>
@@ -289,6 +306,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -307,10 +325,12 @@
                             <TextBox x:Name="TextBox_Adelle_Max_MP" Grid.Column="1" Text="{Binding ViewModelAdelle.MaxMP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
                             <Label x:Name="Label_Adelle_EXP" Content="EXP" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"/>
                             <TextBox x:Name="TextBox_Adelle_EXP" Grid.Column="1" Text="{Binding ViewModelAdelle.EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox"/>
-                            <Label x:Name="Label_Adelle_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ComboBox_Adelle_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="5" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
-                            <Label x:Name="Label_Adelle_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="ComboBox_Adelle_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+                            <Label x:Name="Label_Adelle_Level" Content="Level" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center"/>
+                            <TextBox x:Name="TextBox_Adelle_Level" Grid.Column="1" Text="{Binding ViewModelAdelle.Level, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="5" VerticalAlignment="Center" PreviewTextInput="NumberValidationTextBox" IsEnabled="False"/>
+                            <Label x:Name="Label_Adelle_MainJob" Content="Main Job" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Adelle_MainJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="6" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding ViewModelAdelle.MainJob, Converter={StaticResource JobToTextConverter}, Mode=OneWay}" IsEnabled="False"/>
+                            <Label x:Name="Label_Adelle_SecondJob" Content="Second Job" Grid.Column="0" Grid.Row="7" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ComboBox_Adelle_SecondJob" Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="7" VerticalAlignment="Center" ItemsSource="{Binding CharacterJobsList}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding ViewModelAdelle.SecondJob, Converter={StaticResource JobToTextConverter}, Mode=OneWay}" IsEnabled="False"/>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Jobs">
@@ -329,33 +349,33 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <controls:JobBox GroupLabel="Freelancer" EXP="{Binding ViewModelAdelle.Jobs[0].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[0].LevelLimitUnlocked}" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Monk" EXP="{Binding ViewModelAdelle.Jobs[1].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[1].LevelLimitUnlocked}" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="White Mage" EXP="{Binding ViewModelAdelle.Jobs[2].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[2].LevelLimitUnlocked}" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Black Mage" EXP="{Binding ViewModelAdelle.Jobs[3].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[3].LevelLimitUnlocked}" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Vanguard" EXP="{Binding ViewModelAdelle.Jobs[4].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[4].LevelLimitUnlocked}" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Bard" EXP="{Binding ViewModelAdelle.Jobs[5].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[5].LevelLimitUnlocked}" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Freelancer" EXP="{Binding ViewModelAdelle.Jobs[0].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[0].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Monk" EXP="{Binding ViewModelAdelle.Jobs[1].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[1].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="White Mage" EXP="{Binding ViewModelAdelle.Jobs[2].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[2].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Black Mage" EXP="{Binding ViewModelAdelle.Jobs[3].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[3].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Vanguard" EXP="{Binding ViewModelAdelle.Jobs[4].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[4].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Bard" EXP="{Binding ViewModelAdelle.Jobs[5].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[5].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Beast Master" EXP="{Binding ViewModelAdelle.Jobs[6].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[6].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Thief" EXP="{Binding ViewModelAdelle.Jobs[7].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[7].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Gambler" EXP="{Binding ViewModelAdelle.Jobs[8].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[8].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Berserker" EXP="{Binding ViewModelAdelle.Jobs[9].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[9].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Red Mage" EXP="{Binding ViewModelAdelle.Jobs[10].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[10].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Ranger" EXP="{Binding ViewModelAdelle.Jobs[11].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[11].LevelLimitUnlocked}" Grid.Column="1" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Beast Master" EXP="{Binding ViewModelAdelle.Jobs[6].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[6].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Thief" EXP="{Binding ViewModelAdelle.Jobs[7].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[7].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Gambler" EXP="{Binding ViewModelAdelle.Jobs[8].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[8].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Berserker" EXP="{Binding ViewModelAdelle.Jobs[9].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[9].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Red Mage" EXP="{Binding ViewModelAdelle.Jobs[10].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[10].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Ranger" EXP="{Binding ViewModelAdelle.Jobs[11].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[11].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Shieldmaster" EXP="{Binding ViewModelAdelle.Jobs[12].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[12].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Pictomancer" EXP="{Binding ViewModelAdelle.Jobs[13].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[13].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Dragoon" EXP="{Binding ViewModelAdelle.Jobs[14].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[14].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Spiritmaster" EXP="{Binding ViewModelAdelle.Jobs[15].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[15].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Swordmaster" EXP="{Binding ViewModelAdelle.Jobs[16].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[16].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Oracle" EXP="{Binding ViewModelAdelle.Jobs[17].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[17].LevelLimitUnlocked}" Grid.Column="2" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Shieldmaster" EXP="{Binding ViewModelAdelle.Jobs[12].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[12].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Pictomancer" EXP="{Binding ViewModelAdelle.Jobs[13].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[13].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Dragoon" EXP="{Binding ViewModelAdelle.Jobs[14].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[14].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Spiritmaster" EXP="{Binding ViewModelAdelle.Jobs[15].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[15].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Swordmaster" EXP="{Binding ViewModelAdelle.Jobs[16].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[16].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Oracle" EXP="{Binding ViewModelAdelle.Jobs[17].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[17].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="2" Grid.Row="5"/>
 
-                            <controls:JobBox GroupLabel="Salve-Maker" EXP="{Binding ViewModelAdelle.Jobs[18].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[18].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="0"/>
-                            <controls:JobBox GroupLabel="Arcanist" EXP="{Binding ViewModelAdelle.Jobs[19].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[19].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="1"/>
-                            <controls:JobBox GroupLabel="Bastion" EXP="{Binding ViewModelAdelle.Jobs[20].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[20].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="2"/>
-                            <controls:JobBox GroupLabel="Phantom" EXP="{Binding ViewModelAdelle.Jobs[21].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[21].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="3"/>
-                            <controls:JobBox GroupLabel="Hellblade" EXP="{Binding ViewModelAdelle.Jobs[22].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[22].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="4"/>
-                            <controls:JobBox GroupLabel="Bravebearer" EXP="{Binding ViewModelAdelle.Jobs[23].EXP, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[23].LevelLimitUnlocked}" Grid.Column="3" Grid.Row="5"/>
+                            <controls:JobBox GroupLabel="Salve-Maker" EXP="{Binding ViewModelAdelle.Jobs[18].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[18].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="0"/>
+                            <controls:JobBox GroupLabel="Arcanist" EXP="{Binding ViewModelAdelle.Jobs[19].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[19].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="1"/>
+                            <controls:JobBox GroupLabel="Bastion" EXP="{Binding ViewModelAdelle.Jobs[20].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[20].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="2"/>
+                            <controls:JobBox GroupLabel="Phantom" EXP="{Binding ViewModelAdelle.Jobs[21].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[21].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="3"/>
+                            <controls:JobBox GroupLabel="Hellblade" EXP="{Binding ViewModelAdelle.Jobs[22].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[22].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="4"/>
+                            <controls:JobBox GroupLabel="Bravebearer" EXP="{Binding ViewModelAdelle.Jobs[23].EXP, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsLevelLimited="{Binding ViewModelAdelle.Jobs[23].LevelLimitUnlocked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="3" Grid.Row="5"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
