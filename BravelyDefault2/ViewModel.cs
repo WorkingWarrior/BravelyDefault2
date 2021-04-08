@@ -4,9 +4,7 @@ using System.Linq;
 
 namespace BravelyDefault2 {
     class ViewModel {
-        public ViewModel() {
-
-        }
+        public ViewModel() { }
 
         public bool SaveLoaded => SaveData.Instance().Loaded;
 
