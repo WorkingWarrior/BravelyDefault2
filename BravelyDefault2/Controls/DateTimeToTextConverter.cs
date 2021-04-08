@@ -9,7 +9,7 @@ namespace BravelyDefault2.Controls {
                 return string.Empty;
             }
 
-            return ((DateTime)value).ToString("HH:mm:ss dd.MM.yyyy");
+            return ((DateTime)value).ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
