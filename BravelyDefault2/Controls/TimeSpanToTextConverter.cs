@@ -10,7 +10,6 @@ namespace BravelyDefault2.Controls {
             }
 
             return new DateTime(((TimeSpan)value).Ticks).ToString("HH:mm:ss");
-            ;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
