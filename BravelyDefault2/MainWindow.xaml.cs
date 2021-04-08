@@ -1,15 +1,9 @@
 ﻿using Microsoft.Win32;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace BravelyDefault2 {
-    /// <summary>
-    /// MainWindow.xaml の相互作用ロジック
-    /// </summary>
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
@@ -65,20 +59,9 @@ namespace BravelyDefault2 {
             Close();
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-
-        }
-
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e) {
             Regex regex = new("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
-        }
-
-        private void ComboBox_Seth_MainJob_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            ComboBox combo = sender as ComboBox;
-            string jobID = combo.SelectedValue.ToString();
-
-            (DataContext as ViewModel).ViewModelSeth.MainJob = Job.FromID(jobID);
         }
     }
 }

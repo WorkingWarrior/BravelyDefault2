@@ -1,7 +1,5 @@
 ﻿using BravelyDefault2.Jobs;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace BravelyDefault2 {
@@ -34,8 +32,6 @@ namespace BravelyDefault2 {
             }
 
             Offset = (uint)(raw_offset + SaveDataID.Length + Util.TERMINATOR_LENGTH);
-
-            //Offset = (raw_offset + SaveDataID.Length + Util.TERMINATOR_LENGTH + EXPValueOffset);
         }
 
         public static string NameFromID(string saveDataID) {
@@ -48,15 +44,15 @@ namespace BravelyDefault2 {
             try {
                 name = List.First(j => j.SaveDataID == saveDataID).Name;
             } catch(Exception e) {
-                Debug.WriteLine(e);
+                Console.WriteLine(e);
             }
 
-            return(name);
+            return name;
         }
 
         public static Job FromID(string saveDataID) {
-            if(string.IsNullOrEmpty(saveDataID.Trim())) {
-                throw new ArgumentException(message: "Invalid job ID");
+            if(string.IsNullOrEmpty(saveDataID)) {
+                return null;
             }
 
             Job j = new();
@@ -64,7 +60,7 @@ namespace BravelyDefault2 {
             try {
                 j = List.First(j => j.SaveDataID == saveDataID);
             } catch(Exception e) {
-                Debug.WriteLine(e);
+                Console.WriteLine(e);
             }
 
             return j;
